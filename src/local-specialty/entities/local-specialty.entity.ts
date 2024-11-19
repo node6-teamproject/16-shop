@@ -8,27 +8,21 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Product {
+export class LocalSpecialty {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  local_specialty_id: number;
+  region_id: number;
 
   @Column()
-  name: number;
+  name: string;
 
   @Column()
   description: string;
 
   @Column()
-  price: number;
-
-  @Column()
-  stock: number;
-
-  @Column()
-  image_url: string;
+  season_info: string;
 
   @CreateDateColumn()
   created_at: Date;
