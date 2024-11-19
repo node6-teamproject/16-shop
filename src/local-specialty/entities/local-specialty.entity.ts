@@ -1,8 +1,13 @@
+import { Product } from 'src/product/entities/product.entity';
+import { Region } from 'src/region/entities/region.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,4 +37,11 @@ export class LocalSpecialty {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @ManyToOne(() => Region, (region) => region.localSpecialty)
+  @JoinColumn({ name: 'region_id' })
+  region: Region;
+
+  @OneToMany(() => Product, (product) => product.localSpecialty)
+  product: Product[];
 }
