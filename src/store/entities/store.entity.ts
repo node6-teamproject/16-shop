@@ -1,8 +1,11 @@
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,4 +38,8 @@ export class Store {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @OneToOne(() => User, (user) => user.store)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

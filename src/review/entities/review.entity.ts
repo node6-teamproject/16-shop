@@ -1,8 +1,11 @@
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,4 +35,8 @@ export class Review {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @ManyToOne(() => User, (user) => user.review)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
