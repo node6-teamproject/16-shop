@@ -1,4 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CartItem } from 'src/cart-item/entities/cart-item.entity';
+import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { Product } from 'src/product/entities/product.entity';
+import { Store } from 'src/store/entities/store.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class StoreProduct {
@@ -16,4 +20,18 @@ export class StoreProduct {
 
   @Column()
   stock: number;
+
+  @ManyToOne(() => Store, (store) => store.storeProduct)
+  @JoinColumn({ name: 'store_id' })
+  store: Store;
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.storeProduct)
+  cartItem: CartItem[];
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.storeProduct)
+  orderItem: OrderItem[];
+
+  @ManyToOne(() => Product, (product) => product.storeProduct)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
 }

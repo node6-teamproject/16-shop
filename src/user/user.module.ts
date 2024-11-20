@@ -1,21 +1,29 @@
-import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { StoreModule } from 'src/store/store.module';
+import { ReviewModule } from 'src/review/review.module';
+import { OrderModule } from 'src/order/order.module';
+import { CartItemModule } from 'src/cart-item/cart-item.module';
+import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { User } from './entities/user.entity';
 import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { Module } from '@nestjs/common';
+
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
+    StoreModule,
+    ReviewModule,
+    OrderModule,
+    CartItemModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET'),
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
   ],
   providers: [UserService],
   controllers: [UserController],

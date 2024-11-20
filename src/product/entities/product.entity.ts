@@ -1,8 +1,13 @@
+import { LocalSpecialty } from 'src/local-specialty/entities/local-specialty.entity';
+import { StoreProduct } from 'src/store-product/entities/store-product.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -38,4 +43,11 @@ export class Product {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.product)
+  storeProduct: StoreProduct[];
+
+  @ManyToOne(() => LocalSpecialty, (localSpecialty) => localSpecialty.product)
+  @JoinColumn({ name: 'local_specialty_id' })
+  localSpecialty: LocalSpecialty;
 }
