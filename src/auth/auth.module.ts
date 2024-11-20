@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { JwtStrategy } from './jwt.strategy';
       //inject는 useFactory에 의존성을 주입하는 방법
       inject: [ConfigService],
     }),
+    UserModule, // 추가!
   ],
   //JwtStrategy를 애플리케이션의 의존성 주입 시스템에 등록하는 부분
   providers: [JwtStrategy],
