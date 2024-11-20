@@ -1,8 +1,14 @@
+import { CartItem } from 'src/cart-item/entities/cart-item.entity';
+import { Order } from 'src/order/entities/order.entity';
+import { Review } from 'src/review/entities/review.entity';
+import { Store } from 'src/store/entities/store.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -43,4 +49,16 @@ export class User {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @OneToOne(() => Store, (store) => store.user)
+  store: Store;
+
+  @OneToMany(() => Review, (review) => review.user)
+  review: Review[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  order: Order[];
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
+  cartItem: CartItem[];
 }

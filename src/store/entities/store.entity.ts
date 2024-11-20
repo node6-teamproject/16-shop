@@ -1,8 +1,14 @@
+import { Review } from 'src/review/entities/review.entity';
+import { StoreProduct } from 'src/store-product/entities/store-product.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,4 +41,14 @@ export class Store {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @OneToOne(() => User, (user) => user.store)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @OneToMany(() => Review, (review) => review.store)
+  review: Review;
+
+  @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.store)
+  storeProduct: StoreProduct;
 }

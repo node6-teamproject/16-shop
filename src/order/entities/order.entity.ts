@@ -1,7 +1,12 @@
+import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -40,4 +45,11 @@ export class Order {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => User, (user) => user.order)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  orderItem: OrderItem;
 }
