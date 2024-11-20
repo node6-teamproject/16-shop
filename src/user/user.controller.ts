@@ -33,6 +33,7 @@ export class UserController {
   //인증된 사용자 반환
   @Get('userinfo')
   getEmail(@UserInfo() user: User) {
-    return { data: user };
+    const { password, ...filteredUser } = user;
+    return { data: filteredUser };
   }
 }

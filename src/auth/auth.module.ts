@@ -1,7 +1,7 @@
 //JWT를 검증하는 jwt.strategy를 적용하기 위해 모듈 작성
 //https://velog.io/@wkddudghks81/jwt-%EA%B2%80%EC%A6%9D%ED%95%98%EB%8A%94-auth.modules.ts
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule,ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
@@ -9,6 +9,7 @@ import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     //Passport:Node.js의 인증 미들웨어로, 다양한 인증 전략을 지원하는 라이브러리, jwt전략을 사용하며 세션은 비활성화
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.registerAsync({
@@ -21,10 +22,11 @@ import { UserModule } from 'src/user/user.module';
         //JWT는 서명된 토큰이며, 이 서명은 비밀 키(secret)를 사용하여 생성
         //secret은 JWT의 서명 생성 및 검증에 사용되는 비밀 키
         //헤더, 페이로드 - 인코딩 -> (헤더+페이로드) + secret 서명 = jwt 생성
-        secret: config.get<string>('JWT_SECRET_KEY'),
+        secret: config.get<string>('JWT_SECRET'),
       }),
       //inject는 useFactory에 의존성을 주입하는 방법
       inject: [ConfigService],
+      imports: [ConfigModule],
     }),
     UserModule, // 추가!
   ],
