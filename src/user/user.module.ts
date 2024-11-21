@@ -16,10 +16,10 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     forwardRef(() => AuthModule),
     TypeOrmModule.forFeature([User]),
-    // StoreModule, //종속성 오류로 잠시 배제함
-    // ReviewModule,
-    // OrderModule,
-    // CartItemModule,
+    StoreModule,
+    ReviewModule,
+    OrderModule,
+    CartItemModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET'),

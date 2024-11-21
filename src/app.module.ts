@@ -21,15 +21,15 @@ import { typeormModuleOptions } from './configs/database.config';
   imports: [
     AuthModule,
     LocalSpecialtyModule,
-    // OrderModule,
-    // ProductModule,
+    OrderModule,
+    ProductModule,
     RegionModule,
-    // ReviewModule,
-    // StoreModule, //종속성 오류로 잠시 배제함
-    // StoreProductModule,
+    ReviewModule,
+    StoreModule,
+    StoreProductModule,
     UserModule,
-    // CartItemModule,
-    // OrderItemModule,
+    CartItemModule,
+    OrderItemModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: configModuleValidationJoiSchema,

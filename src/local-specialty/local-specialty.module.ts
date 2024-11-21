@@ -8,8 +8,8 @@ import { ProductModule } from 'src/product/product.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([LocalSpecialty]), 
-  // RegionModule,
-  // ProductModule
+  RegionModule,
+  ProductModule
 ],
   controllers: [LocalSpecialtyController],
   providers: [LocalSpecialtyService],

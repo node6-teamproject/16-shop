@@ -8,7 +8,7 @@ import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order]),
-  //  OrderItemModule, 
+   OrderItemModule, 
    UserModule],
   controllers: [OrderController],
   providers: [OrderService],

@@ -80,6 +80,11 @@ export class UserService {
     await this.userRepository.update({ id }, { nickname, address, phone });
   }
 
+  async deleteInfo(id: number, password:string) {
+    await this.verifyInfo(id, password);
+    await this.userRepository.delete({ id });
+  }
+
   private async verifyInfo(id: number, password:string) {
     const user = await this.userRepository.findOneBy({
       id,
