@@ -14,10 +14,10 @@ import {
 
 @Entity()
 export class LocalSpecialty {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column()
+  @Column({ type: 'int', unsigned: true })
   region_id: number;
 
   @Column()

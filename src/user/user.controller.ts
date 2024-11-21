@@ -21,7 +21,8 @@ export class UserController {
   @Post('sign-up')
   //loginDto에서 이메일과 비밀번호를 받아 사용자 등록
   async register(@Body() registerDto: RegisterDto) {
-    return await this.userService.register(registerDto.email, registerDto.password, registerDto.nickname, registerDto.address, registerDto.phone);
+    return await this.userService.register(registerDto.email, registerDto.password, registerDto.nickname, registerDto.address, registerDto.phone),
+    { message: '회원가입이 완료되었습니다.' };;
   }
 
   //로그인에 성공하면 토큰을 반환
@@ -38,7 +39,8 @@ export class UserController {
     return await { data: filteredUser };
   }
 
-  @Patch('update:id')
+  @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   async updateInfo(@UserInfo() user: User,@Param('id') id: number,@Body() updateDto: UpdateDto,) {
     if (user.id !== id) {
       throw new UnauthorizedException('권한이 없습니다.');
@@ -46,20 +48,19 @@ export class UserController {
     
     await this.userService.updateInfo(
       id,
-      updateDto.password,
-      updateDto.phone,
-      updateDto.nickname,
-      updateDto.address
+      updateDto
     );
-
-    return { message: '사용자 정보가 성공적으로 업데이트되었습니다.' };
+    const { password, ...filteredUser } = user;
+    return await { message: '사용자 정보가 성공적으로 업데이트되었습니다.',data: filteredUser }
   }
 
-  @Delete('delete:id')
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
     async deleteInfo(@UserInfo() user: User,@Param('id') id: number,@Body() deleteDto: DeleteDto) {
       if (user.id !== id) {
         throw new UnauthorizedException('권한이 없습니다.');
       }
-      await this.userService.deleteInfo(id,deleteDto.password);
+      await this.userService.deleteInfo(id,deleteDto);
+      return { message: '탈퇴 되었습니다.' }
   }
 }

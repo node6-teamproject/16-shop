@@ -6,11 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
-import { StoreModule } from '../store/store.module';
+import { StoreModule } from 'src/store/store.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    // ConfigModule.forRoot(),
     //Passport:Node.js의 인증 미들웨어로, 다양한 인증 전략을 지원하는 라이브러리, jwt전략을 사용하며 세션은 비활성화
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.registerAsync({
@@ -27,9 +27,10 @@ import { StoreModule } from '../store/store.module';
       }),
       //inject는 useFactory에 의존성을 주입하는 방법
       inject: [ConfigService],
-      imports: [ConfigModule],
+      // imports: [ConfigModule],
     }),
     forwardRef(() => UserModule), // 추가!
+    forwardRef(() => StoreModule)
   ],
   //JwtStrategy를 애플리케이션의 의존성 주입 시스템에 등록하는 부분
   providers: [JwtStrategy],

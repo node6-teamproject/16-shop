@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { LocalSpecialtyService } from './local-specialty.service';
 import { LocalSpecialtyController } from './local-specialty.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,8 +8,8 @@ import { ProductModule } from 'src/product/product.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([LocalSpecialty]), 
-  RegionModule,
-  ProductModule
+  forwardRef(() =>RegionModule),
+  forwardRef(() =>ProductModule)
 ],
   controllers: [LocalSpecialtyController],
   providers: [LocalSpecialtyService],

@@ -16,10 +16,10 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     forwardRef(() => AuthModule),
     TypeOrmModule.forFeature([User]),
-    StoreModule,
-    ReviewModule,
-    OrderModule,
-    CartItemModule,
+    forwardRef(() => StoreModule),
+    forwardRef(() =>ReviewModule),
+    forwardRef(() =>OrderModule),
+    forwardRef(() =>CartItemModule),
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET'),

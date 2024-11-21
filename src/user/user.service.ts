@@ -6,6 +6,8 @@ import { ConflictException, Injectable, NotFoundException, UnauthorizedException
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { UpdateDto } from './dto/update.dto';
+import { DeleteDto } from './dto/delete.dto';
 
 @Injectable()
 export class UserService {
@@ -75,13 +77,15 @@ export class UserService {
     return await this.userRepository.findOneBy({ nickname });
   }
 
-  async updateInfo(id:number, password:string, nickname: string, address:string, phone:string) {
-    await this.verifyInfo(id,password);
+  async updateInfo(id:number, updateDto: UpdateDto) {
+    await this.verifyInfo(id,updateDto.password);
+    const { nickname, address, phone } = updateDto;
+
     await this.userRepository.update({ id }, { nickname, address, phone });
   }
 
-  async deleteInfo(id: number, password:string) {
-    await this.verifyInfo(id, password);
+  async deleteInfo(id: number, deleteDto: DeleteDto) {
+    await this.verifyInfo(id, deleteDto.password);
     await this.userRepository.delete({ id });
   }
 
