@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { RegisterDto } from './dto/resister.dto';
+import { RegisterDto } from './dto/register.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto'
 
