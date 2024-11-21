@@ -7,7 +7,9 @@ import { OrderItemModule } from 'src/order-item/order-item.module';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order]), OrderItemModule, UserModule],
+  imports: [TypeOrmModule.forFeature([Order]),
+  //  OrderItemModule, 
+   UserModule],
   controllers: [OrderController],
   providers: [OrderService],
 })

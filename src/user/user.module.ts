@@ -8,16 +8,18 @@ import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UserController } from './user.controller';
-import { Module } from '@nestjs/common';
+import { forwardRef,Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
 
 
 @Module({
   imports: [
+    forwardRef(() => AuthModule),
     TypeOrmModule.forFeature([User]),
-    StoreModule,
-    ReviewModule,
-    OrderModule,
-    CartItemModule,
+    // StoreModule, //종속성 오류로 잠시 배제함
+    // ReviewModule,
+    // OrderModule,
+    // CartItemModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET'),

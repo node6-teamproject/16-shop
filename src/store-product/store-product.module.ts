@@ -11,7 +11,7 @@ import { ProductModule } from 'src/product/product.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([StoreProduct]),
-    StoreModule,
+    // StoreModule,
     CartItemModule,
     OrderItemModule,
     ProductModule,

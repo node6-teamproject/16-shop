@@ -7,7 +7,10 @@ import { RegionModule } from 'src/region/region.module';
 import { ProductModule } from 'src/product/product.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LocalSpecialty]), RegionModule, ProductModule],
+  imports: [TypeOrmModule.forFeature([LocalSpecialty]), 
+  // RegionModule,
+  // ProductModule
+],
   controllers: [LocalSpecialtyController],
   providers: [LocalSpecialtyService],
 })

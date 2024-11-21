@@ -1,12 +1,13 @@
 import { UserInfo } from 'src/utils/userInfo.decorator';
 
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { RegisterDto } from './dto/resister.dto';
+import { UpdateDto } from './dto/update.dto';
 
 //주소/user
 @Controller('user')
@@ -29,12 +30,27 @@ export class UserController {
   }
   //AuthGuard('jwt')는 요청 헤더에서 JWT 토큰을 추출하고, 토큰이 유효한지 확인한 후 해당 사용자의 정보를 요청 핸들러에 주입
   @UseGuards(AuthGuard('jwt'))
-
   //인증된 사용자 반환
   @Get('userinfo')
-  getEmail(@UserInfo() user: User) {
+  async getEmail(@UserInfo() user: User) {
     const { password, ...filteredUser } = user;
-    return { data: filteredUser };
+    return await { data: filteredUser };
   }
-  //주석
+
+  @Patch(':id')
+  async updateInfo(@UserInfo() user: User,@Param('id') id: number,@Body() updateDto: UpdateDto,) {
+    if (user.id !== id) {
+      throw new UnauthorizedException('권한이 없습니다.');
+    }
+    
+    await this.userService.updateInfo(
+      id,
+      updateDto.password,
+      updateDto.phone,
+      updateDto.nickname,
+      updateDto.address
+    );
+
+    return { message: '사용자 정보가 성공적으로 업데이트되었습니다.' };
+  }
 }
