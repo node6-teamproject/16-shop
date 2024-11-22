@@ -10,6 +10,7 @@ import { RegisterDto } from './dto/register.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto'
 import { ChangeDto } from './dto/change.dto';
+import { CashDto } from './dto/cash.dto';
 
 //주소/user
 @Controller('user')
@@ -46,6 +47,14 @@ export class UserController {
     await this.userService.changeUserRole(changeDto);
     return { message: '판매자 등록이 완료되었습니다.'}
   }
+
+  @Put('cash')
+  @UseGuards(AuthGuard('jwt'))
+  async cash(@UserInfo() user: User,@Body() cashDto: CashDto) {
+    await this.userService.cash(user,cashDto);
+    return { message: '캐쉬충전이 완료되었습니다.'}
+  }
+
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
