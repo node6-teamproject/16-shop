@@ -36,7 +36,10 @@ export class User {
   address: string;
 
   @Column()
-  phone: string;
+  phone: number;
+
+  @Column({default:0})
+  cash: number;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
   role: UserRole;
