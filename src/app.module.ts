@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { LocalSpecialtyModule } from './local-specialty/local-specialty.module';
 import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
-import { RegionModule } from './region/region.module';
 import { ReviewModule } from './review/review.module';
 import { StoreModule } from './store/store.module';
 import { StoreProductModule } from './store-product/store-product.module';
@@ -23,7 +22,6 @@ import { typeormModuleOptions } from './configs/database.config';
     LocalSpecialtyModule,
     OrderModule,
     ProductModule,
-    RegionModule,
     ReviewModule,
     StoreModule,
     StoreProductModule,
