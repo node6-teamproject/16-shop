@@ -1,6 +1,6 @@
 import { UserInfo } from 'src/utils/userInfo.decorator';
 
-import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException, Delete, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { LoginDto } from './dto/login.dto';
@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto'
+import { ChangeDto } from './dto/change.dto';
 
 //주소/user
 @Controller('user')
@@ -37,6 +38,13 @@ export class UserController {
   async getEmail(@UserInfo() user: User) {
     const { password, ...filteredUser } = user;
     return await { data: filteredUser };
+  }
+
+  @Put('seller')
+  @UseGuards(AuthGuard('jwt'))
+  async changeUserRole(@Body() changeDto: ChangeDto) {
+    await this.userService.changeUserRole(changeDto);
+    return { message: '판매자 등록이 완료되었습니다.'}
   }
 
   @Patch(':id')
