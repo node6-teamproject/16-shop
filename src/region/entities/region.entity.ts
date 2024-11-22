@@ -1,10 +1,12 @@
 import { LocalSpecialty } from 'src/local-specialty/entities/local-specialty.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum RegionProvince {}
+export enum RegionProvince {
+  do = '경상남도',
+}
 @Entity()
 export class Region {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
   @Column()
@@ -13,7 +15,7 @@ export class Region {
   @Column()
   description: string;
 
-  @Column({ type: 'enum', enum: RegionProvince })
+  @Column({ type: 'enum', enum: RegionProvince,default: RegionProvince.do })
   province: RegionProvince;
 
   @OneToMany(() => LocalSpecialty, (localSpecialty) => localSpecialty.region)

@@ -15,10 +15,10 @@ import {
 
 @Entity()
 export class Store {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ unsigned: true })
+  @Column({ type: 'int', unsigned: true })
   user_id: number;
 
   @Column()

@@ -19,10 +19,10 @@ export enum ShipStatus {
 }
 @Entity()
 export class Order {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column()
+  @Column({ type: 'int', unsigned: true })
   user_id: number;
 
   @Column({ type: 'enum', enum: ShipStatus })

@@ -1,10 +1,13 @@
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Repository } from 'typeorm';
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { UpdateDto } from './dto/update.dto';
+import { DeleteDto } from './dto/delete.dto';
 
 @Injectable()
 export class UserService {
@@ -72,5 +75,33 @@ export class UserService {
 
   async findByNickname(nickname: string) {
     return await this.userRepository.findOneBy({ nickname });
+  }
+
+  async updateInfo(id:number, updateDto: UpdateDto) {
+    await this.verifyInfo(id,updateDto.password);
+    const { nickname, address, phone } = updateDto;
+
+    await this.userRepository.update({ id }, { nickname, address, phone });
+  }
+
+  async deleteInfo(id: number, deleteDto: DeleteDto) {
+    await this.verifyInfo(id, deleteDto.password);
+    await this.userRepository.delete({ id });
+  }
+
+  private async verifyInfo(id: number, password:string) {
+    const user = await this.userRepository.findOneBy({
+      id,
+    });
+
+    if (_.isNil(user)) {
+      throw new NotFoundException(
+        '데이터를 찾을 수 없거나 수정/삭제할 권한이 없습니다.',
+      );
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    }
   }
 }
