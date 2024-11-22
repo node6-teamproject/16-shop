@@ -41,9 +41,10 @@ export class UserController {
   }
 
   @Put('seller')
-  async changeRole(@Body() changeDto: ChangeDto): Promise<string> {
+  @UseGuards(AuthGuard('jwt'))
+  async changeRole(@Body() changeDto: ChangeDto) {
     await this.userService.changeUserRole(changeDto);
-    return '사용자 역할이 성공적으로 변경되었습니다.';
+    return { message: '판매자 등록이 완료되었습니다.'}
   }
 
   @Patch(':id')
