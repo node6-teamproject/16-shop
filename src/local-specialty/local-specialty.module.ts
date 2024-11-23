@@ -4,10 +4,20 @@ import { LocalSpecialtyController } from './local-specialty.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LocalSpecialty } from './entities/local-specialty.entity';
 import { ProductModule } from 'src/product/product.module';
+import { PassportModule } from '@nestjs/passport';
+import { UserModule } from 'src/user/user.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LocalSpecialty]), forwardRef(() => ProductModule)],
+  imports: [
+    TypeOrmModule.forFeature([LocalSpecialty]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    AuthModule,
+    UserModule,
+    forwardRef(() => ProductModule),
+  ],
   controllers: [LocalSpecialtyController],
   providers: [LocalSpecialtyService],
+  exports: [LocalSpecialtyService],
 })
 export class LocalSpecialtyModule {}
