@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { LocalSpecialty } from './entities/local-specialty.entity';
 import { IsNull, Like, Repository } from 'typeorm';
 import { CreateLocalSpecialtyDto } from './dto/create-local-specialty.dto';
@@ -7,6 +7,7 @@ import { Region } from './types/region.type';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SearchLocalSpecialtyDto } from './dto/search-local-specialty.dto';
 
+// TODO: 예외 처리, name이 같은 특산품 등록 시 예외 처리 추가
 @Injectable()
 export class LocalSpecialtyService {
   constructor(
@@ -21,6 +22,15 @@ export class LocalSpecialtyService {
    * @returns 특산품 생성 결과
    */
   async create(user: User, createDto: CreateLocalSpecialtyDto) {
+    const { name } = createDto;
+    const existedSpecialty = this.localSpecialtyRepository.find({
+      where: { name },
+    });
+
+    if (existedSpecialty) {
+      throw new BadRequestException('이미 존재하는 특산품 이름');
+    }
+
     const specialty = this.localSpecialtyRepository.create(createDto);
 
     return await this.localSpecialtyRepository.save(specialty);
