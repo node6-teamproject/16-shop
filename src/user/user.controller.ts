@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 import { RegisterDto } from './dto/resister.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 //주소/user
 @Controller('user')
@@ -31,7 +32,7 @@ export class UserController {
     return await this.userService.login(loginDto.email, loginDto.password);
   }
   //AuthGuard('jwt')는 요청 헤더에서 JWT 토큰을 추출하고, 토큰이 유효한지 확인한 후 해당 사용자의 정보를 요청 핸들러에 주입
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   //인증된 사용자 반환
   @Get('userinfo')
   async getEmail(@UserInfo() user: User) {
@@ -40,7 +41,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async updateInfo(@UserInfo() user: User,@Param('id') id: number,@Body() updateDto: UpdateDto,) {
     if (user.id !== id) {
       throw new UnauthorizedException('권한이 없습니다.');
@@ -55,7 +56,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
     async deleteInfo(@UserInfo() user: User,@Param('id') id: number,@Body() deleteDto: DeleteDto) {
       if (user.id !== id) {
         throw new UnauthorizedException('권한이 없습니다.');
