@@ -1,15 +1,18 @@
 import { UserInfo } from 'src/utils/userInfo.decorator';
 
-import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException, Delete, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { RegisterDto } from './dto/resister.dto';
+import { RegisterDto } from './dto/register.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ChangeDto } from './dto/change.dto';
+import { CashDto } from './dto/cash.dto';
+
 
 //주소/user
 @Controller('user')
@@ -39,6 +42,21 @@ export class UserController {
     const { password, ...filteredUser } = user;
     return await { data: filteredUser };
   }
+
+  @Put('seller')
+  @UseGuards(AuthGuard('jwt'))
+  async changeUserRole(@Body() changeDto: ChangeDto) {
+    await this.userService.changeUserRole(changeDto);
+    return { message: '판매자 등록이 완료되었습니다.'}
+  }
+
+  @Put('cash')
+  @UseGuards(AuthGuard('jwt'))
+  async cash(@UserInfo() user: User,@Body() cashDto: CashDto) {
+    await this.userService.cash(user,cashDto);
+    return { message: '캐쉬충전이 완료되었습니다.'}
+  }
+
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)

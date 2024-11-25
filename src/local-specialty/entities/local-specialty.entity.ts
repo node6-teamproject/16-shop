@@ -1,4 +1,3 @@
-import { Product } from 'src/product/entities/product.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,10 +8,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Region } from '../types/region.type';
+import { StoreProduct } from 'src/store-product/entities/store-product.entity';
 
 @Entity()
 export class LocalSpecialty {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -27,6 +27,9 @@ export class LocalSpecialty {
   @Column({ type: 'enum', enum: Region })
   region: Region;
 
+  @Column()
+  image_url: string;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -36,6 +39,6 @@ export class LocalSpecialty {
   @DeleteDateColumn()
   deleted_at: Date;
 
-  @OneToMany(() => Product, (product) => product.localSpecialty)
-  product: Product[];
+  @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.local_specialty)
+  storeProducts: StoreProduct[];
 }
