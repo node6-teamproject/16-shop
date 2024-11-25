@@ -9,6 +9,7 @@ import { User, UserRole } from './entities/user.entity';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto';
 import { ChangeDto } from './dto/change.dto';
+import { CashDto } from './dto/cash.dto';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
   //회원가입
-  async register(email: string, password: string, nickname: string, address: string, phone: number,) {
+  async register(email: string, password: string, nickname: string, address: string, phone: string,) {
     const existingUseremail = await this.findByEmail(email);
     const existingUsernickname = await this.findByNickname(nickname)
     if (existingUseremail) {
@@ -97,6 +98,18 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
+  async cash(user: User, cashDto: CashDto) {
+    const { cash } = cashDto;
+
+    // 유효성 검사 기능
+    if (cash <= 0) {
+      throw new BadRequestException('충전할 캐쉬는 0보다 커야 합니다.');
+    }
+
+    // 사용자 정보 업데이트
+    user.cash += cash;
+    await this.userRepository.save(user);
+  }
 
   async updateInfo(id:number, updateDto: UpdateDto) {
     await this.verifyInfo(id,updateDto.password);

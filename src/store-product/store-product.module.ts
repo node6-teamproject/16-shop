@@ -6,15 +6,13 @@ import { StoreProduct } from './entities/store-product.entity';
 import { StoreModule } from 'src/store/store.module';
 import { CartItemModule } from 'src/cart-item/cart-item.module';
 import { OrderItemModule } from 'src/order-item/order-item.module';
-import { ProductModule } from 'src/product/product.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([StoreProduct]),
     forwardRef(() =>StoreModule),
     forwardRef(() =>CartItemModule),
-    OrderItemModule,
-    ProductModule,
+    forwardRef(() => OrderItemModule),
   ],
   controllers: [StoreProductController],
   providers: [StoreProductService],

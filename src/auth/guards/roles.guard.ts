@@ -1,11 +1,14 @@
-import { UserRole } from 'src/user/entities/user.entity';
-
+import { User, UserRole } from 'src/user/entities/user.entity';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ROLES_KEY } from 'src/common/decorators/roles.decorator';
 
 @Injectable()
 export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
+  @InjectRepository(User) private readonly userRepository: Repository<User>;
   constructor(private reflector: Reflector) {
     super();
   }
@@ -16,7 +19,7 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
       return false;
     }
 
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>('roles', [
+    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);

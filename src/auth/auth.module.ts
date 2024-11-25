@@ -1,10 +1,10 @@
 //JWT를 검증하는 jwt.strategy를 적용하기 위해 모듈 작성
 //https://velog.io/@wkddudghks81/jwt-%EA%B2%80%EC%A6%9D%ED%95%98%EB%8A%94-auth.modules.ts
 import { forwardRef, Module } from '@nestjs/common';
-import { ConfigModule,ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from 'src/user/user.module';
 import { StoreModule } from 'src/store/store.module';
 
@@ -24,13 +24,16 @@ import { StoreModule } from 'src/store/store.module';
         //secret은 JWT의 서명 생성 및 검증에 사용되는 비밀 키
         //헤더, 페이로드 - 인코딩 -> (헤더+페이로드) + secret 서명 = jwt 생성
         secret: config.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: config.get<string>('JWT_EXPIRATION_TIME'),
+        },
       }),
       //inject는 useFactory에 의존성을 주입하는 방법
       inject: [ConfigService],
       // imports: [ConfigModule],
     }),
     forwardRef(() => UserModule), // 추가!
-    forwardRef(() => StoreModule)
+    forwardRef(() => StoreModule),
   ],
   //JwtStrategy를 애플리케이션의 의존성 주입 시스템에 등록하는 부분
   providers: [JwtStrategy],
