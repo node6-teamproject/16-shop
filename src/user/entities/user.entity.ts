@@ -14,10 +14,11 @@ import {
 } from 'typeorm';
 
 export enum UserRole {
-  CUSTOMER = '일반',
-  SELLER = '판매자',
-  ADMIN = '관리자',
+  CUSTOMER = 'CUSTOMER',
+  SELLER = 'SELLER',
+  ADMIN = 'ADMIN',
 }
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
@@ -26,17 +27,17 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column()
   nickname: string;
 
   @Column()
-  address: string;
+  address?: string;
 
   @Column()
-  phone: number;
+  phone?: string;
 
   @Column({default:0})
   cash: number;
@@ -57,11 +58,11 @@ export class User {
   store: Store;
 
   @OneToMany(() => Review, (review) => review.user)
-  review: Review[];
+  reviews: Review[];
 
   @OneToMany(() => Order, (order) => order.user)
-  order: Order[];
+  orders: Order[];
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.user)
-  cartItem: CartItem[];
+  cart_items: CartItem[];
 }

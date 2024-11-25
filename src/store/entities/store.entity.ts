@@ -28,25 +28,25 @@ export class Store {
   description: string;
 
   @Column()
-  address: string;
+  address?: string;
 
   @Column()
-  contact: string;
+  contact?: string;
 
   @Column()
-  image: string;
+  image?: string;
 
   @Column({ default: 0 })
   review_count: number;
 
-  @Column({ default: 0 })
+  @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   rating: number;
 
   @Column()
-  longitude: number;
+  longitude?: number;
 
   @Column()
-  latitude: number;
+  latitude?: number;
 
   @Column({ default: 0 })
   total_sales: number;
@@ -68,5 +68,5 @@ export class Store {
   reviews: Review[];
 
   @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.store)
-  storeProducts: StoreProduct[];
+  store_products: StoreProduct[];
 }
