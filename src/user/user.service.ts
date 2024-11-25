@@ -101,8 +101,7 @@ export class UserService {
   async cash(user: User, cashDto: CashDto) {
     const { cash } = cashDto;
 
-    // 유효성 검사
-    
+    // 유효성 검사 기능
     if (cash <= 0) {
       throw new BadRequestException('충전할 캐쉬는 0보다 커야 합니다.');
     }
