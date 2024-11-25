@@ -11,7 +11,7 @@ import { ReviewModule } from 'src/review/review.module';
   imports: [
     TypeOrmModule.forFeature([Store]),
     JwtModule,
-    UserModule,
+    forwardRef(() => UserModule),
     forwardRef(() => ReviewModule),
   ],
   controllers: [StoreController],

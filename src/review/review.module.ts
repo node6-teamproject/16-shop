@@ -12,7 +12,7 @@ import { StoreModule } from 'src/store/store.module';
   imports: [
     TypeOrmModule.forFeature([Review, Store]),
     JwtModule,
-    UserModule,
+    forwardRef(() => UserModule),
     forwardRef(() => StoreModule),
   ],
   controllers: [ReviewController],

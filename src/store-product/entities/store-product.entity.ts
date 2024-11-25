@@ -47,7 +47,7 @@ export class StoreProduct {
   @Column()
   image: string;
 
-  @ManyToOne(() => Store, (store) => store.storeProducts)
+  @ManyToOne(() => Store, (store) => store.store_products)
   @JoinColumn({ name: 'store_id' })
   store: Store;
 

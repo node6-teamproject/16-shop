@@ -22,7 +22,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
   //회원가입
-  async register(email: string, password: string, nickname: string, address: string, phone: number,) {
+  async register(email: string, password: string, nickname: string, address: string, phone: string,) {
     const existingUseremail = await this.findByEmail(email);
     const existingUsernickname = await this.findByNickname(nickname)
     if (existingUseremail) {
