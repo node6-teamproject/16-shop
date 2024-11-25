@@ -15,23 +15,41 @@ import {
 
 @Entity()
 export class Store {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', unsigned: true })
+  @Column({ unsigned: true })
   user_id: number;
 
   @Column()
   name: string;
 
   @Column()
-  content: string;
+  description: string;
 
   @Column()
   address: string;
 
   @Column()
   contact: string;
+
+  @Column()
+  image: string;
+
+  @Column({ default: 0 })
+  review_count: number;
+
+  @Column({ default: 0 })
+  rating: number;
+
+  @Column()
+  longitude: number;
+
+  @Column()
+  latitude: number;
+
+  @Column({ default: 0 })
+  total_sales: number;
 
   @CreateDateColumn()
   created_at: Date;
@@ -47,8 +65,8 @@ export class Store {
   user: User;
 
   @OneToMany(() => Review, (review) => review.store)
-  review: Review;
+  reviews: Review[];
 
   @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.store)
-  storeProduct: StoreProduct;
+  storeProducts: StoreProduct[];
 }
