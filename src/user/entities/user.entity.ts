@@ -14,31 +14,35 @@ import {
 } from 'typeorm';
 
 export enum UserRole {
-  CUSTOMER = '일반',
-  SELLER = '판매자',
-  ADMIN = '관리자',
+  CUSTOMER = 'CUSTOMER',
+  SELLER = 'SELLER',
+  ADMIN = 'ADMIN',
 }
+
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column()
   nickname: string;
 
   @Column()
-  address: string;
+  address?: string;
 
   @Column()
-  phone: string;
+  phone?: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
+  @Column({ default: 0 })
+  cash: number;
+
+  @Column({ type: 'varchar', enum: UserRole, default: UserRole.CUSTOMER }) // 실제 타입은 enum이지만 테스트를 위해 타입을 text로 변경
   role: UserRole;
 
   @CreateDateColumn()
@@ -54,11 +58,11 @@ export class User {
   store: Store;
 
   @OneToMany(() => Review, (review) => review.user)
-  review: Review[];
+  reviews: Review[];
 
   @OneToMany(() => Order, (order) => order.user)
-  order: Order[];
+  orders: Order[];
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.user)
-  cartItem: CartItem[];
+  cart_items: CartItem[];
 }
