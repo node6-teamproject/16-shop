@@ -2,12 +2,14 @@ import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto';
+import { ChangeDto } from './dto/change.dto';
+import { CashDto } from './dto/cash.dto';
 
 @Injectable()
 export class UserService {
@@ -20,7 +22,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
   //회원가입
-  async register(email: string, password: string, nickname: string, address: string, phone: string,) {
+  async register(email: string, password: string, nickname: string, address: string, phone: number,) {
     const existingUseremail = await this.findByEmail(email);
     const existingUsernickname = await this.findByNickname(nickname)
     if (existingUseremail) {
@@ -75,6 +77,38 @@ export class UserService {
 
   async findByNickname(nickname: string) {
     return await this.userRepository.findOneBy({ nickname });
+  }
+
+  async changeUserRole(changeDto: ChangeDto): Promise<void> {
+    const { email, role } = changeDto;
+
+    // 사용자 찾기
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    // 유효한 역할인지 확인
+    if (!Object.values(UserRole).includes(role as UserRole)) {
+      throw new BadRequestException('유효하지 않은 역할입니다.');
+    }
+
+    // 역할 업데이트
+    user.role = role as UserRole;
+    await this.userRepository.save(user);
+  }
+
+  async cash(user: User, cashDto: CashDto) {
+    const { cash } = cashDto;
+
+    // 유효성 검사 기능
+    if (cash <= 0) {
+      throw new BadRequestException('충전할 캐쉬는 0보다 커야 합니다.');
+    }
+
+    // 사용자 정보 업데이트
+    user.cash += cash;
+    await this.userRepository.save(user);
   }
 
   async updateInfo(id:number, updateDto: UpdateDto) {
