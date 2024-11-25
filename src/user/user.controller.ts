@@ -1,14 +1,18 @@
 import { UserInfo } from 'src/utils/userInfo.decorator';
 
-import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards,Patch, Param, UnauthorizedException, Delete, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { RegisterDto } from './dto/resister.dto';
+import { RegisterDto } from './dto/register.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ChangeDto } from './dto/change.dto';
+import { CashDto } from './dto/cash.dto';
+
 
 //주소/user
 @Controller('user')
@@ -31,7 +35,7 @@ export class UserController {
     return await this.userService.login(loginDto.email, loginDto.password);
   }
   //AuthGuard('jwt')는 요청 헤더에서 JWT 토큰을 추출하고, 토큰이 유효한지 확인한 후 해당 사용자의 정보를 요청 핸들러에 주입
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   //인증된 사용자 반환
   @Get('userinfo')
   async getEmail(@UserInfo() user: User) {
@@ -39,8 +43,23 @@ export class UserController {
     return await { data: filteredUser };
   }
 
-  @Patch(':id')
+  @Put('seller')
   @UseGuards(AuthGuard('jwt'))
+  async changeUserRole(@Body() changeDto: ChangeDto) {
+    await this.userService.changeUserRole(changeDto);
+    return { message: '판매자 등록이 완료되었습니다.'}
+  }
+
+  @Put('cash')
+  @UseGuards(AuthGuard('jwt'))
+  async cash(@UserInfo() user: User,@Body() cashDto: CashDto) {
+    await this.userService.cash(user,cashDto);
+    return { message: '캐쉬충전이 완료되었습니다.'}
+  }
+
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async updateInfo(@UserInfo() user: User,@Param('id') id: number,@Body() updateDto: UpdateDto,) {
     if (user.id !== id) {
       throw new UnauthorizedException('권한이 없습니다.');
@@ -55,7 +74,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
     async deleteInfo(@UserInfo() user: User,@Param('id') id: number,@Body() deleteDto: DeleteDto) {
       if (user.id !== id) {
         throw new UnauthorizedException('권한이 없습니다.');
