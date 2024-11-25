@@ -13,7 +13,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChangeDto } from './dto/change.dto';
 import { CashDto } from './dto/cash.dto';
 
-
 //주소/user
 @Controller('user')
 //사용자와 관련된 HTTP 요청을 처리하는 역할
@@ -41,6 +40,13 @@ export class UserController {
   async getEmail(@UserInfo() user: User) {
     const { password, ...filteredUser } = user;
     return await { data: filteredUser };
+  }
+
+  @Put('seller')
+  @UseGuards(AuthGuard('jwt'))
+  async changeRole(@Body() changeDto: ChangeDto) {
+    await this.userService.changeUserRole(changeDto);
+    return { message: '판매자 등록이 완료되었습니다.'}
   }
 
   @Put('seller')
