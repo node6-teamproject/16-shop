@@ -102,6 +102,7 @@ export class UserService {
     const { cash } = cashDto;
 
     // 유효성 검사
+    
     if (cash <= 0) {
       throw new BadRequestException('충전할 캐쉬는 0보다 커야 합니다.');
     }
