@@ -5,14 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StoreProduct } from './entities/store-product.entity';
 import { StoreModule } from 'src/store/store.module';
 import { CartItemModule } from 'src/cart-item/cart-item.module';
-import { OrderItemModule } from 'src/order-item/order-item.module';
+import { LocalSpecialty } from 'src/local-specialty/entities/local-specialty.entity';
+import { Store } from 'src/store/entities/store.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StoreProduct]),
-    forwardRef(() =>StoreModule),
-    forwardRef(() =>CartItemModule),
-    forwardRef(() => OrderItemModule),
+    TypeOrmModule.forFeature([StoreProduct, Store, LocalSpecialty]),
+    AuthModule,
+    forwardRef(() => StoreModule),
+    forwardRef(() => CartItemModule),
   ],
   controllers: [StoreProductController],
   providers: [StoreProductService],
