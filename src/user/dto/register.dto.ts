@@ -21,7 +21,5 @@ export class RegisterDto {
   @IsNotEmpty({ message: '전화번호를 입력해주세요.' })
   phone: string;
 
-  @IsString()
-  @IsNotEmpty({ message: '코드를 입력해주세요.' })
-  admincode?: string;
+  admincode: string;
 }

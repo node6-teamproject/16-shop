@@ -10,6 +10,7 @@ import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto';
 import { ChangeDto } from './dto/change.dto';
 import { CashDto } from './dto/cash.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -20,10 +21,11 @@ export class UserService {
     private userRepository: Repository<User>,
     //JWT 토큰을 생성하고 검증하는 데 사용
     private readonly jwtService: JwtService,
+    private readonly config: ConfigService
   ) {}
   //회원가입
   async register(email: string, password: string, nickname: string, address: string, phone: string, admincode?:string) {
-    const MASTER_CODE = process.env.ADMIN_CODE;
+    const admincode1 = process.env.ADMIN_CODE
     const existingUseremail = await this.findByEmail(email);
     const existingUsernickname = await this.findByNickname(nickname)
     if (existingUseremail) {
@@ -38,10 +40,8 @@ export class UserService {
       );
     }
 
-    let role = UserRole.CUSTOMER; // 기본값은 CUSTOMER
-    if (admincode && admincode === MASTER_CODE) {
-      role = UserRole.ADMIN; // 관리자 코드가 맞으면 ADMIN 역할 설정
-    }
+    let role = (admincode === admincode1) ? UserRole.ADMIN : UserRole.CUSTOMER;
+
 
     //비밀번호 암호화
     const hashedPassword = await hash(password, 10);
