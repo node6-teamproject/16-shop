@@ -6,16 +6,19 @@ import { LocalSpecialty } from './entities/local-specialty.entity';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { User } from 'src/user/entities/user.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([LocalSpecialty]),
+    TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     AuthModule,
     UserModule,
   ],
   controllers: [LocalSpecialtyController],
-  providers: [LocalSpecialtyService],
+  providers: [RolesGuard,LocalSpecialtyService],
   exports: [LocalSpecialtyService],
 })
 export class LocalSpecialtyModule {}
