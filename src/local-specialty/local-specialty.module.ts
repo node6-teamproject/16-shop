@@ -12,10 +12,10 @@ import { User } from 'src/user/entities/user.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([LocalSpecialty]),
-    TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     AuthModule,
     UserModule,
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [LocalSpecialtyController],
   providers: [RolesGuard,LocalSpecialtyService],

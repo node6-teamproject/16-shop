@@ -18,7 +18,7 @@ export class Store {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'int', unsigned: true })
+  @Column({ type: 'int', unsigned: true, unique: true })
   user_id: number;
 
   @Column()
