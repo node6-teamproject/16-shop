@@ -28,7 +28,7 @@ export class LocalSpecialty {
   region: Region;
 
   @Column()
-  image_url: string;
+  image: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -40,5 +40,5 @@ export class LocalSpecialty {
   deleted_at: Date;
 
   @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.local_specialty)
-  storeProducts: StoreProduct[];
+  store_products: StoreProduct[];
 }

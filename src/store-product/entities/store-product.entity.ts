@@ -1,6 +1,6 @@
 import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { LocalSpecialty } from 'src/local-specialty/entities/local-specialty.entity';
-import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { OrderItem } from 'src/order/entities/order-item.entity';
 import { Store } from 'src/store/entities/store.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -51,13 +51,13 @@ export class StoreProduct {
   @JoinColumn({ name: 'store_id' })
   store: Store;
 
-  @ManyToOne(() => LocalSpecialty, (localSpecialty) => localSpecialty.storeProducts)
+  @ManyToOne(() => LocalSpecialty, (localSpecialty) => localSpecialty.store_products)
   @JoinColumn({ name: 'local_specialty_id' })
   local_specialty: LocalSpecialty;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.storeProduct)
-  cartItems: CartItem[];
+  @OneToMany(() => CartItem, (cartItem) => cartItem.store_product)
+  cart_items: CartItem[];
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.storeProduct)
-  orderItems: OrderItem[];
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.store_product)
+  order_items: OrderItem[];
 }

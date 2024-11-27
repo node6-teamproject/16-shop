@@ -1,4 +1,4 @@
-import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { OrderItem } from 'src/order/entities/order-item.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -51,5 +51,5 @@ export class Order {
   user: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
-  orderItem: OrderItem;
+  order_items: OrderItem[];
 }

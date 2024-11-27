@@ -26,10 +26,10 @@ export class OrderItem {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Order, (order) => order.orderItem)
+  @ManyToOne(() => Order, (order) => order.order_items)
   @JoinColumn({ name: 'order_id' })
   order: Order;
 
-  @ManyToOne(() => StoreProduct, (storeProduct) => storeProduct.orderItems)
-  storeProduct: StoreProduct;
+  @ManyToOne(() => StoreProduct, (storeProduct) => storeProduct.order_items)
+  store_product: StoreProduct;
 }
