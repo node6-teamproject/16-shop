@@ -22,7 +22,8 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
   //회원가입
-  async register(email: string, password: string, nickname: string, address: string, phone: string,) {
+  async register(email: string, password: string, nickname: string, address: string, phone: string, admincode?:string) {
+    const MASTER_CODE = process.env.MASTER_CODE;
     const existingUseremail = await this.findByEmail(email);
     const existingUsernickname = await this.findByNickname(nickname)
     if (existingUseremail) {
@@ -36,6 +37,12 @@ export class UserService {
         '똑같은 닉네임이 이미 존재합니다.',
       );
     }
+
+    let Admin = false;
+    if (admincode && admincode === MASTER_CODE) {
+      Admin = true; // 관리자 여부 확인
+    }
+
     //비밀번호 암호화
     const hashedPassword = await hash(password, 10);
 
