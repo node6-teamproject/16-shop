@@ -38,9 +38,9 @@ export class UserService {
       );
     }
 
-    let Admin = false;
+    let role = UserRole.CUSTOMER; // 기본값은 CUSTOMER
     if (admincode && admincode === MASTER_CODE) {
-      Admin = true; // 관리자 여부 확인
+      role = UserRole.ADMIN; // 관리자 코드가 맞으면 ADMIN 역할 설정
     }
 
     //비밀번호 암호화
@@ -52,7 +52,8 @@ export class UserService {
       password: hashedPassword,
       nickname,
       address,
-      phone
+      phone,
+      role
     });
   }
 
