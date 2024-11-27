@@ -20,4 +20,6 @@ export class RegisterDto {
   @IsString()
   @IsNotEmpty({ message: '전화번호를 입력해주세요.' })
   phone: string;
+
+  admincode: string;
 }

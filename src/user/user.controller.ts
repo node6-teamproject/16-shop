@@ -24,7 +24,7 @@ export class UserController {
   @Post('sign-up')
   //loginDto에서 이메일과 비밀번호를 받아 사용자 등록
   async register(@Body() registerDto: RegisterDto) {
-    return await this.userService.register(registerDto.email, registerDto.password, registerDto.nickname, registerDto.address, registerDto.phone),
+    return await this.userService.register(registerDto.email, registerDto.password, registerDto.nickname, registerDto.address, registerDto.phone, registerDto.admincode),
     { message: '회원가입이 완료되었습니다.' };;
   }
 
@@ -45,13 +45,6 @@ export class UserController {
   @Put('seller')
   @UseGuards(AuthGuard('jwt'))
   async changeRole(@Body() changeDto: ChangeDto) {
-    await this.userService.changeUserRole(changeDto);
-    return { message: '판매자 등록이 완료되었습니다.'}
-  }
-
-  @Put('seller')
-  @UseGuards(AuthGuard('jwt'))
-  async changeUserRole(@Body() changeDto: ChangeDto) {
     await this.userService.changeUserRole(changeDto);
     return { message: '판매자 등록이 완료되었습니다.'}
   }

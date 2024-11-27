@@ -6,13 +6,13 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 
 @Entity()
 export class StoreProduct {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column()
+  @Column({ type: 'int', unsigned: true })
   store_id: number;
 
-  @Column()
+  @Column({ type: 'int', unsigned: true })
   local_specialty_id: number;
 
   // 상품명

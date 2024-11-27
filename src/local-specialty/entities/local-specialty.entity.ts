@@ -12,7 +12,7 @@ import { StoreProduct } from 'src/store-product/entities/store-product.entity';
 
 @Entity()
 export class LocalSpecialty {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
   @Column()

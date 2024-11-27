@@ -42,7 +42,7 @@ export class User {
   @Column({default:0})
   cash: number;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
+  @Column({ type: 'enum', enum: UserRole, default:UserRole.CUSTOMER})
   role: UserRole;
 
   @CreateDateColumn()
