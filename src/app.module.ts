@@ -9,11 +9,11 @@ import { StoreModule } from './store/store.module';
 import { StoreProductModule } from './store-product/store-product.module';
 import { UserModule } from './user/user.module';
 import { CartItemModule } from './cart-item/cart-item.module';
-import { OrderItemModule } from './order-item/order-item.module';
 import { ConfigModule } from '@nestjs/config';
 import { configModuleValidationJoiSchema } from './configs/env-validation.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormModuleOptions } from './configs/database.config';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -25,7 +25,6 @@ import { typeormModuleOptions } from './configs/database.config';
     StoreProductModule,
     UserModule,
     CartItemModule,
-    OrderItemModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: configModuleValidationJoiSchema,

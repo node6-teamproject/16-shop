@@ -15,7 +15,7 @@ import {
 
 @Entity()
 export class Store {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
   @Column({ unsigned: true, unique: true })

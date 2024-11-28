@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from 'src/user/user.module';
 import { StoreModule } from 'src/store/store.module';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { StoreModule } from 'src/store/store.module';
     forwardRef(() => StoreModule),
   ],
   //JwtStrategy를 애플리케이션의 의존성 주입 시스템에 등록하는 부분
-  providers: [JwtStrategy],
+  providers: [RolesGuard,JwtStrategy],
 })
 export class AuthModule {}

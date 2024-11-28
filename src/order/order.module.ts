@@ -8,7 +8,8 @@ import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, OrderItem]), AuthModule, forwardRef(() => UserModule)],
+  imports: [TypeOrmModule.forFeature([Order, OrderItem]), 
+  forwardRef(() =>AuthModule), forwardRef(() => UserModule)],
   controllers: [OrderController],
   providers: [OrderService],
 })
