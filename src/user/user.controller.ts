@@ -20,8 +20,11 @@ import { DeleteDto } from './dto/delete.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChangeDto } from './dto/change.dto';
 import { CashDto } from './dto/cash.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 //주소/user
+@ApiTags('users')
+@ApiBearerAuth('access-token')
 @Controller('user')
 //사용자와 관련된 HTTP 요청을 처리하는 역할
 export class UserController {
