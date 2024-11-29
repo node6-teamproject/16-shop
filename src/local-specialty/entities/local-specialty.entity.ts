@@ -15,10 +15,10 @@ export class LocalSpecialty {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column('text')
+  @Column({ type: 'text' })
   description: string;
 
   @Column()
@@ -27,17 +27,17 @@ export class LocalSpecialty {
   @Column({ type: 'enum', enum: Region })
   region: Region;
 
-  @Column()
-  image: string;
+  @Column({ nullable: true })
+  image?: string;
 
   @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ nullable: true })
+  updated_at?: Date;
 
-  @DeleteDateColumn()
-  deleted_at: Date;
+  @DeleteDateColumn({ nullable: true })
+  deleted_at?: Date;
 
   @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.local_specialty)
   store_products: StoreProduct[];

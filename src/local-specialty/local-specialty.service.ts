@@ -23,7 +23,7 @@ export class LocalSpecialtyService {
    */
   async create(user: User, createDto: CreateLocalSpecialtyDto) {
     const { name } = createDto;
-    const existedSpecialty = this.localSpecialtyRepository.find({
+    const existedSpecialty = await this.localSpecialtyRepository.find({
       where: { name },
     });
 
