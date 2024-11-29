@@ -22,7 +22,8 @@ export class CreateStoreDto {
   @IsNotEmpty()
   address?: string;
 
-  @IsPhoneNumber()
+  @IsPhoneNumber('KR')
+  @IsOptional()
   contact?: string;
 
   // 지도 api에 좌표 정보를 받아오기 위한 위도, 경도

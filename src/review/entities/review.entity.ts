@@ -34,11 +34,11 @@ export class Review {
   @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ nullable: true })
+  updated_at?: Date;
 
-  @DeleteDateColumn()
-  deleted_at: Date;
+  @DeleteDateColumn({ nullable: true })
+  deleted_at?: Date;
 
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

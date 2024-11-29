@@ -28,12 +28,12 @@ export class Store {
   description: string;
 
   @Column()
-  address?: string;
+  address: string;
 
-  @Column()
+  @Column({ nullable: true })
   contact?: string;
 
-  @Column()
+  @Column({ nullable: true })
   image?: string;
 
   @Column({ default: 0 })
@@ -42,10 +42,10 @@ export class Store {
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   rating: number;
 
-  @Column()
+  @Column({ nullable: true })
   longitude?: number;
 
-  @Column()
+  @Column({ nullable: true })
   latitude?: number;
 
   @Column({ default: 0 })
@@ -54,11 +54,11 @@ export class Store {
   @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ nullable: true })
+  updated_at?: Date;
 
-  @DeleteDateColumn()
-  deleted_at: Date;
+  @DeleteDateColumn({ nullable: true })
+  deleted_at?: Date;
 
   @OneToOne(() => User, (user) => user.store, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
