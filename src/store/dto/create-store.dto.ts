@@ -19,10 +19,10 @@ export class CreateStoreDto {
   description: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   address?: string;
 
-  @IsPhoneNumber('KR')
+  @IsPhoneNumber()
   @IsOptional()
   contact?: string;
 

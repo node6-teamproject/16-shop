@@ -11,14 +11,16 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 
 @Entity()
+@Index(['name', 'deleted_at'], { unique: true })
 export class Store {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ unsigned: true, unique: true })
+  @Column({ unsigned: true, unique: true, type: 'int' })
   user_id: number;
 
   @Column()
@@ -27,8 +29,8 @@ export class Store {
   @Column()
   description: string;
 
-  @Column()
-  address: string;
+  @Column({ nullable: true })
+  address?: string;
 
   @Column({ nullable: true })
   contact?: string;
@@ -36,19 +38,19 @@ export class Store {
   @Column({ nullable: true })
   image?: string;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: 'bigint' })
   review_count: number;
 
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   rating: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   longitude?: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   latitude?: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: 'bigint' })
   total_sales: number;
 
   @CreateDateColumn()
