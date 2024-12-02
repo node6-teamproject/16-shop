@@ -16,10 +16,9 @@ export class StoreProduct {
   local_specialty_id: number;
 
   // 상품명
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   product_name: string;
 
-  // 상품 설명
   @Column({ type: 'text' })
   description: string;
 
@@ -32,7 +31,7 @@ export class StoreProduct {
   type?: string;
 
   // 무게
-  @Column({ default: 0, nullable: true })
+  @Column({ default: 0, type: 'float', nullable: true })
   weight?: number;
 
   // 가격
