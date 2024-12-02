@@ -1,19 +1,10 @@
-interface Region {
-    name: string;
-    lat: number;
-    lng: number;
-    specialties: string[];
-}
-
 class SpecialtyMap {
-    private map: naver.maps.Map | null = null;
-    private infoWindow: naver.maps.InfoWindow | null = null;
-    private regions: Region[];
-
-    constructor(mapDiv: string, clientId: string) {
+    constructor(mapDiv, clientId) {
+        this.map = null;
+        this.infoWindow = null;
         this.regions = [
             { name: '경기도', lat: 37.4138, lng: 127.5183, specialties: ['이천 쌀', '안성 배', '포천 막걸리', '가평 잣', '양평 한우'] },
-            { name: '강원도', lat: 37.8228, lng: 128.1555, specialties: ['횡성 한우', '평창 산천어', '강릉 커피', '양양 송이', '춘천 닭갈비'] },
+            { name: '강원도', lat: 37.8228, lng: 128.1555, specialties: ['횡성 한우', '강릉 초당두부', '양양 송이', '속초 오징어'] },
             { name: '충청북도', lat: 36.6358, lng: 127.4914, specialties: ['충주 사과', '청주 직지', '보은 대추', '영동 포도', '괴산 고추'] },
             { name: '충청남도', lat: 36.6588, lng: 126.8000, specialties: ['서산 마늘', '논산 딸기', '부여 연꽃', '예산 사과', '공주 밤'] },
             { name: '전라북도', lat: 35.8202, lng: 127.1089, specialties: ['순창 고추장', '고창 복분자', '임실 치즈', '남원 추어탕', '전주 비빔밥'] },
@@ -30,7 +21,7 @@ class SpecialtyMap {
         });
     }
 
-    private loadNaverMapsScript(clientId: string): Promise<void> {
+    loadNaverMapsScript(clientId) {
         return new Promise((resolve) => {
             const script = document.createElement('script');
             script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
@@ -39,15 +30,24 @@ class SpecialtyMap {
         });
     }
 
-    private initMap(mapDiv: string): void {
+    initMap(mapDiv) {
         this.map = new naver.maps.Map(mapDiv, {
             zoom: 7,
-            center: new naver.maps.LatLng(35.95, 127.7),
+            center: new naver.maps.LatLng(36.5, 127.5),
             zoomControl: true,
             zoomControlOptions: {
                 style: naver.maps.ZoomControlStyle.SMALL,
                 position: naver.maps.Position.TOP_RIGHT
-            }
+            },
+            mapTypeControl: true,
+            scaleControl: true,
+            mapDataControl: true,
+            maxBounds: new naver.maps.LatLngBounds(
+                new naver.maps.LatLng(32.0, 124.0),
+                new naver.maps.LatLng(39.0, 132.0)
+            ),
+            minZoom: 6,
+            maxZoom: 13
         });
 
         this.infoWindow = new naver.maps.InfoWindow({
@@ -63,7 +63,7 @@ class SpecialtyMap {
         });
     }
 
-    private addMarkers(): void {
+    addMarkers() {
         if (!this.map || !this.infoWindow) return;
 
         this.regions.forEach((region) => {
@@ -73,6 +73,11 @@ class SpecialtyMap {
             });
 
             naver.maps.Event.addListener(marker, 'click', () => {
+                if (this.map) {
+                    this.map.setCenter(new naver.maps.LatLng(region.lat, region.lng));
+                    this.map.setZoom(13);
+                }
+
                 const content = `
                     <div class="info-window">
                         <h3>${region.name} 특산품</h3>
@@ -97,7 +102,7 @@ class SpecialtyMap {
         }
     }
 
-    private addJejuPolygon(): void {
+    addJejuPolygon() {
         if (!this.map) return;
 
         const jejuPath = [
@@ -122,5 +127,4 @@ class SpecialtyMap {
     }
 }
 
-// 사용 예:
-// const specialtyMap = new SpecialtyMap('map', 'YOUR_CLIENT_ID');
+const specialtyMap = new SpecialtyMap('map', 'lzg0amobdq');
