@@ -105,6 +105,10 @@ export class UserService {
       throw new BadRequestException('유효하지 않은 역할입니다.');
     }
 
+    if(role==='ADMIN'){
+      throw new BadRequestException('유효하지 않은 역할입니다.')
+    }
+
     // 역할 업데이트
     user.role = role as UserRole;
     await this.userRepository.save(user);
