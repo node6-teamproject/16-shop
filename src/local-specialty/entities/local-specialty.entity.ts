@@ -23,7 +23,7 @@ export class LocalSpecialty {
   description: string;
 
   @Column({
-    type: 'simple-array',
+    type: 'set',
     enum: SpecialtySeason,
     transformer: {
       to: (value: SpecialtySeason[]) => value.join(','),
