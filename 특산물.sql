@@ -1,4 +1,4 @@
-INSERT INTO fruits (name, description, season_info, region) VALUES
+INSERT INTO local_specialty (name, description, season_info, region) VALUES
 ('딸기', '새콤달콤', JSON_ARRAY('봄'), '충남'),
 ('포도', '쫀득한 단맛', JSON_ARRAY('여름', '가을'), '충북'),
 ('사과', '아삭하고 달콤함', JSON_ARRAY('가을'), '강원'),
