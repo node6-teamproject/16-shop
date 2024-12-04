@@ -9,7 +9,7 @@ import { User } from 'src/user/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User,LocalSpecialty]),
+    TypeOrmModule.forFeature([LocalSpecialty, User]),
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
   ],
