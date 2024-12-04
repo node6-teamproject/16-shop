@@ -7,7 +7,7 @@ import { DocumentBuilder } from '@nestjs/swagger';
 import { SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors();
 
@@ -43,9 +43,10 @@ async function bootstrap() {
       'access-token',
     )
     .build();
-  
+
   app.useStaticAssets(join(__dirname, '..', 'public'), {
-    index: false
+    index: false,
+    prefix: '/',
   });
 
   const document = SwaggerModule.createDocument(app, config);

@@ -39,9 +39,9 @@ import { RolesGuard } from './auth/guards/roles.guard';
       serveRoot: '/',
       serveStaticOptions: {
         index: false,
-        extensions: ['html', 'js', 'svg']
-      }
-    })
+        extensions: ['html', 'js', 'svg'],
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
