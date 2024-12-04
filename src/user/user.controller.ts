@@ -52,12 +52,12 @@ export class UserController {
     return { data: filteredUser };
   }
 
-  // 판매자로 등록
+  //역할변경
   @Put('seller')
   @UseGuards(JwtAuthGuard)
   async changeRole(@Body() changeDto: ChangeDto) {
     await this.userService.changeUserRole(changeDto);
-    return { message: '판매자 등록이 완료되었습니다.' };
+    return { message: '변경이 완료되었습니다.' };
   }
 
   // 캐시 충전
