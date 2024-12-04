@@ -1,6 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Response } from 'express';
+import { join } from 'path';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 
 @ApiTags('default')
 @Controller()
@@ -15,5 +18,12 @@ export class AppController {
   @ApiResponse({ status: 200, description: '서버 포트 번호를 반환합니다.' })
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Get('specialties')
+  getSpecialtiesMap(@Res() res: Response) {
+    return res.sendFile(
+      join(__dirname, '..', 'public', 'korea.html')
+    );
   }
 }
