@@ -53,7 +53,7 @@ export class UserController {
   }
 
   //역할변경
-  @Put('seller')
+  @Patch('seller')
   @UseGuards(JwtAuthGuard)
   async changeRole(@Body() changeDto: ChangeDto) {
     await this.userService.changeUserRole(changeDto);
@@ -61,7 +61,7 @@ export class UserController {
   }
 
   // 캐시 충전
-  @Put('cash')
+  @Patch('cash')
   @UseGuards(JwtAuthGuard)
   async cash(@UserInfo() user: User, @Body() cashDto: CashDto) {
     await this.userService.cash(user, cashDto);
