@@ -9,9 +9,9 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
 import { Repository } from 'typeorm';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { SearchStoreDto } from './dto/search-store.dto';
-import { AuthUtils } from 'src/common/utils/auth.utils';
+import { AuthUtils } from '../common/utils/auth.utils';
 
 // TODO: 상점 판매량 확인 함수 구현
 @Injectable()

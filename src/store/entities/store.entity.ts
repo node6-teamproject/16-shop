@@ -1,6 +1,6 @@
-import { Review } from 'src/review/entities/review.entity';
-import { StoreProduct } from 'src/store-product/entities/store-product.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Review } from '../../review/entities/review.entity';
+import { StoreProduct } from '../../store-product/entities/store-product.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,

@@ -1,10 +1,10 @@
-import { User, UserRole } from 'src/user/entities/user.entity';
+import { User, UserRole } from '../../user/entities/user.entity';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ROLES_KEY } from 'src/common/decorators/roles.decorator';
+import { ROLES_KEY } from '../../common/decorators/roles.decorator';
 
 @Injectable()
 export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
