@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MapModule } from './map.module';
 import { AuthModule } from './auth/auth.module';
 import { LocalSpecialtyModule } from './local-specialty/local-specialty.module';
 import { OrderModule } from './order/order.module';
@@ -30,6 +33,15 @@ import { RolesGuard } from './auth/guards/roles.guard';
       validationSchema: configModuleValidationJoiSchema,
     }),
     TypeOrmModule.forRootAsync(typeormModuleOptions),
+    MapModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/',
+      serveStaticOptions: {
+        index: false,
+        extensions: ['html', 'js', 'svg'],
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

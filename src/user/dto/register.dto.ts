@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -17,9 +17,11 @@ export class RegisterDto {
   @IsNotEmpty({ message: '주소를 입력해주세요.' })
   address: string;
 
-  @IsString()
+  @IsPhoneNumber('KR')
   @IsNotEmpty({ message: '전화번호를 입력해주세요.' })
   phone: string;
 
-  admincode: string;
+  @IsString()
+  @IsOptional()
+  admincode?: string;
 }

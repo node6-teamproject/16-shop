@@ -34,15 +34,15 @@ export class User {
   nickname: string;
 
   @Column()
-  address?: string;
+  address: string;
 
   @Column()
-  phone?: string;
+  phone: string;
 
-  @Column({default:0})
+  @Column({ default: 0 })
   cash: number;
 
-  @Column({ type: 'enum', enum: UserRole, default:UserRole.CUSTOMER})
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
   role: UserRole;
 
   @CreateDateColumn()
@@ -54,7 +54,7 @@ export class User {
   @DeleteDateColumn()
   deleted_at: Date;
 
-  @OneToOne(() => Store, (store) => store.user)
+  @OneToOne(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
   store: Store;
 
   @OneToMany(() => Review, (review) => review.user)

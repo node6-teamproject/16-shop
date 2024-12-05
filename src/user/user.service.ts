@@ -2,7 +2,13 @@ import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRole } from './entities/user.entity';
@@ -11,37 +17,34 @@ import { DeleteDto } from './dto/delete.dto';
 import { ChangeDto } from './dto/change.dto';
 import { CashDto } from './dto/cash.dto';
 import { ConfigService } from '@nestjs/config';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     //TypeORM의 @InjectRepository 데코레이터는 특정 엔티티(User)의 데이터베이스 작업을 처리하는 Repository를 주입하는 데 사용
-    @InjectRepository(User)
     //Repository 데이터베이스에서 특정 엔티티(User)를 관리하기 위한 메서드들이 포함
-    private userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     //JWT 토큰을 생성하고 검증하는 데 사용
     private readonly jwtService: JwtService,
-    private readonly config: ConfigService
+    private readonly config: ConfigService,
   ) {}
   //회원가입
-  async register(email: string, password: string, nickname: string, address: string, phone: string, admincode?:string) {
-    const admincode1 = process.env.ADMIN_CODE
+  async register(registerDto: RegisterDto) {
+    const { email, password, nickname, address, phone, admincode } = registerDto;
+    const admincode1 = process.env.ADMIN_CODE;
     const existingUseremail = await this.findByEmail(email);
-    const existingUsernickname = await this.findByNickname(nickname)
+    const existingUsernickname = await this.findByNickname(nickname);
     if (existingUseremail) {
-      throw new ConflictException(
-        '이미 해당 이메일로 가입된 사용자가 있습니다!',
-      );
+      throw new ConflictException('이미 해당 이메일로 가입된 사용자가 있습니다!');
     }
 
     if (existingUsernickname) {
-      throw new ConflictException(
-        '똑같은 닉네임이 이미 존재합니다.',
-      );
+      throw new ConflictException('똑같은 닉네임이 이미 존재합니다.');
     }
 
-    let role = (admincode === admincode1) ? UserRole.ADMIN : UserRole.CUSTOMER;
-
+    let role = admincode === admincode1 ? UserRole.ADMIN : UserRole.CUSTOMER;
 
     //비밀번호 암호화
     const hashedPassword = await hash(password, 10);
@@ -53,11 +56,12 @@ export class UserService {
       nickname,
       address,
       phone,
-      role
+      role,
     });
   }
 
-  async login(email: string, password: string) {
+  async login(loginDto: LoginDto) {
+    const { email, password } = loginDto;
     const user = await this.userRepository.findOne({
       select: ['id', 'email', 'password'],
       where: { email },
@@ -101,6 +105,10 @@ export class UserService {
       throw new BadRequestException('유효하지 않은 역할입니다.');
     }
 
+    if(role==='ADMIN'){
+      throw new BadRequestException('유효하지 않은 역할입니다.')
+    }
+
     // 역할 업데이트
     user.role = role as UserRole;
     await this.userRepository.save(user);
@@ -119,8 +127,8 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async updateInfo(id:number, updateDto: UpdateDto) {
-    await this.verifyInfo(id,updateDto.password);
+  async updateInfo(id: number, updateDto: UpdateDto) {
+    await this.verifyInfo(id, updateDto.password);
     const { nickname, address, phone } = updateDto;
 
     await this.userRepository.update({ id }, { nickname, address, phone });
@@ -131,15 +139,14 @@ export class UserService {
     await this.userRepository.delete({ id });
   }
 
-  private async verifyInfo(id: number, password:string) {
-    const user = await this.userRepository.findOneBy({
-      id,
+  private async verifyInfo(id: number, password: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'password'],
     });
 
     if (_.isNil(user)) {
-      throw new NotFoundException(
-        '데이터를 찾을 수 없거나 수정/삭제할 권한이 없습니다.',
-      );
+      throw new NotFoundException('데이터를 찾을 수 없거나 수정/삭제할 권한이 없습니다.');
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
