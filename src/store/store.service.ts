@@ -112,7 +112,7 @@ export class StoreService {
       throw new ForbiddenException('상점 삭제에 대한 권한 X');
     }
 
-    await this.storeRepository.softDelete(id);
+    await this.storeRepository.delete(id);
 
     return `${store.name} 상점이 삭제됨`;
   }
