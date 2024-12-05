@@ -43,6 +43,7 @@ export class UserController {
   async login(@Body() loginDto: LoginDto) {
     return await this.userService.login(loginDto);
   }
+
   //JwtAuthGuard는 요청 헤더에서 JWT 토큰을 추출하고, 토큰이 유효한지 확인한 후 해당 사용자의 정보를 요청 핸들러에 주입
   @UseGuards(JwtAuthGuard)
   //인증된 사용자 반환

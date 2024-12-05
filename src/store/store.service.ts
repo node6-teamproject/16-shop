@@ -125,12 +125,10 @@ export class StoreService {
   async findAllStores() {
     const stores = await this.storeRepository.find({
       relations: {
-        // store와 연관 관계 있는 테이블과 join
         store_products: {
-          //storeProduct 테이블과 join
-          local_specialty: true, // localSpecialty 테이블과 join
+          local_specialty: true,
         },
-        reviews: true, // review 테이블과 join
+        reviews: true,
       },
       select: {
         id: true,
@@ -244,9 +242,6 @@ export class StoreService {
         .take(limit)
         .skip((page - 1) * limit)
         .getMany();
-
-      console.log('Search keyword:', keyword); // 디버깅용
-      console.log('Found stores:', stores); // 디버깅용
 
       const formattedStores = stores.map((store) => ({
         id: store.id,
