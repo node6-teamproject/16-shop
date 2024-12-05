@@ -118,109 +118,109 @@ class SpecialtyMap {
             }
         ];
 
-        this.loadNaverMapsScript(clientId).then(() => {
-            this.initMap(mapDiv);
-            this.addMarkers();
-        });
-    }
+    this.loadNaverMapsScript(clientId).then(() => {
+      this.initMap(mapDiv);
+      this.addMarkers();
+    });
+  }
 
-    loadNaverMapsScript(clientId) {
-        return new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
-            script.onload = () => resolve();
-            document.head.appendChild(script);
-        });
-    }
+  loadNaverMapsScript(clientId) {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
+      script.onload = () => resolve();
+      document.head.appendChild(script);
+    });
+  }
 
-    initMap(mapDiv) {
-        this.map = new naver.maps.Map(mapDiv, {
-            zoom: 7,
-            center: new naver.maps.LatLng(36.5, 127.5),
-            zoomControl: true,
-            zoomControlOptions: {
-                style: naver.maps.ZoomControlStyle.SMALL,
-                position: naver.maps.Position.TOP_RIGHT
-            },
-            mapTypeControl: true,
-            scaleControl: true,
-            mapDataControl: true,
-            minZoom: 6,
-            maxZoom: 13
-        });
+  initMap(mapDiv) {
+    this.map = new naver.maps.Map(mapDiv, {
+      zoom: 7,
+      center: new naver.maps.LatLng(36.5, 127.5),
+      zoomControl: true,
+      zoomControlOptions: {
+        style: naver.maps.ZoomControlStyle.SMALL,
+        position: naver.maps.Position.TOP_RIGHT,
+      },
+      mapTypeControl: true,
+      scaleControl: true,
+      mapDataControl: true,
+      minZoom: 6,
+      maxZoom: 13,
+    });
 
-        this.infoWindow = new naver.maps.InfoWindow({
-            content: '',
-            maxWidth: 300,
-            backgroundColor: "#fff",
-            borderColor: "#2db400",
-            borderWidth: 2,
-            anchorSize: new naver.maps.Size(30, 30),
-            anchorSkew: true,
-            anchorColor: "#fff",
-            pixelOffset: new naver.maps.Point(20, -20)
-        });
-    }
+    this.infoWindow = new naver.maps.InfoWindow({
+      content: '',
+      maxWidth: 300,
+      backgroundColor: '#fff',
+      borderColor: '#2db400',
+      borderWidth: 2,
+      anchorSize: new naver.maps.Size(30, 30),
+      anchorSkew: true,
+      anchorColor: '#fff',
+      pixelOffset: new naver.maps.Point(20, -20),
+    });
+  }
 
-    addMarkers() {
-        if (!this.map || !this.infoWindow) return;
-        
-        this.regions.forEach((region) => {
-            const marker = new naver.maps.Marker({
-                position: new naver.maps.LatLng(region.lat, region.lng),
-                map: this.map
-            });
+  addMarkers() {
+    if (!this.map || !this.infoWindow) return;
 
-            naver.maps.Event.addListener(marker, 'click', () => {
-                if (this.map) {
-                    this.map.setCenter(new naver.maps.LatLng(region.lat, region.lng));
-                    const zoomLevel = region.name === '제주도' ? 11 : 9;
-                    this.map.setZoom(zoomLevel);
-                }
-                this.showSpecialties(region);
-            });
-        });
-    }
+    this.regions.forEach((region) => {
+      const marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(region.lat, region.lng),
+        map: this.map,
+      });
 
-    showSpecialties(region) {
-        this.clearSpecialtyMarkers();
+      naver.maps.Event.addListener(marker, 'click', () => {
+        if (this.map) {
+          this.map.setCenter(new naver.maps.LatLng(region.lat, region.lng));
+          const zoomLevel = region.name === '제주도' ? 11 : 9;
+          this.map.setZoom(zoomLevel);
+        }
+        this.showSpecialties(region);
+      });
+    });
+  }
 
-        region.specialties.forEach(specialty => {
-            const marker = new naver.maps.Marker({
-                position: new naver.maps.LatLng(specialty.lat, specialty.lng),
-                map: this.map,
-                icon: {
-                    url: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png',
-                    size: new naver.maps.Size(27, 43),
-                    origin: new naver.maps.Point(0, 0),
-                    anchor: new naver.maps.Point(13, 43)
-                }
-            });
+  showSpecialties(region) {
+    this.clearSpecialtyMarkers();
 
-            naver.maps.Event.addListener(marker, 'mouseover', () => {
-                const content = `<div style="padding:5px;">${specialty.name}</div>`;
-                this.infoWindow.setContent(content);
-                this.infoWindow.open(this.map, marker);
-            });
+    region.specialties.forEach((specialty) => {
+      const marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(specialty.lat, specialty.lng),
+        map: this.map,
+        icon: {
+          url: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png',
+          size: new naver.maps.Size(27, 43),
+          origin: new naver.maps.Point(0, 0),
+          anchor: new naver.maps.Point(13, 43),
+        },
+      });
 
-            naver.maps.Event.addListener(marker, 'mouseout', () => {
-                this.infoWindow.close();
-            });
+      naver.maps.Event.addListener(marker, 'mouseover', () => {
+        const content = `<div style="padding:5px;">${specialty.name}</div>`;
+        this.infoWindow.setContent(content);
+        this.infoWindow.open(this.map, marker);
+      });
 
-            naver.maps.Event.addListener(marker, 'click', () => {
-                if (specialty.url) {
-                    window.location.href = specialty.url;
-                }
-            });
+      naver.maps.Event.addListener(marker, 'mouseout', () => {
+        this.infoWindow.close();
+      });
 
-            this.specialtyMarkers.push(marker);
-        });
-    }
+      naver.maps.Event.addListener(marker, 'click', () => {
+        if (specialty.url) {
+          window.location.href = specialty.url;
+        }
+      });
 
-    clearSpecialtyMarkers() {
-        this.specialtyMarkers.forEach(marker => marker.setMap(null));
-        this.specialtyMarkers = [];
-    }
+      this.specialtyMarkers.push(marker);
+    });
+  }
+
+  clearSpecialtyMarkers() {
+    this.specialtyMarkers.forEach((marker) => marker.setMap(null));
+    this.specialtyMarkers = [];
+  }
 }
 
 const specialtyMap = new SpecialtyMap('map', 'lzg0amobdq');

@@ -102,7 +102,7 @@ export class LocalSpecialtyService {
    */
   async findAll(): Promise<LocalSpecialty[]> {
     return this.localSpecialtyRepository.find({
-      select: { id: true, name: true, season_info: true, region: true },
+      select: { id: true, name: true, description: true, season_info: true, region: true },
       where: {
         deleted_at: IsNull(),
       },

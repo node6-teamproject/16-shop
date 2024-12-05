@@ -4,7 +4,6 @@ import { Response } from 'express';
 import { join } from 'path';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-
 @ApiTags('default')
 @Controller()
 export class AppController {
@@ -22,8 +21,6 @@ export class AppController {
 
   @Get('specialties')
   getSpecialtiesMap(@Res() res: Response) {
-    return res.sendFile(
-      join(__dirname, '..', 'public', 'korea.html')
-    );
+    return res.sendFile(join(__dirname, '..', 'public', 'korea.html'));
   }
 }
