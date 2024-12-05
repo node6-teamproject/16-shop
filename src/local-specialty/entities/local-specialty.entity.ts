@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Region } from '../types/region.type';
-import { StoreProduct } from 'src/store-product/entities/store-product.entity';
+import { StoreProduct } from '../../store-product/entities/store-product.entity';
 import { SpecialtySeason } from '../types/season.type';
 
 @Entity()

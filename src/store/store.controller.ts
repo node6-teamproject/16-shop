@@ -4,18 +4,18 @@ import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { User, UserRole } from 'src/user/entities/user.entity';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { User, UserRole } from '../user/entities/user.entity';
+import { Roles } from '../common/decorators/roles.decorator';
+import { GetUser } from '../common/decorators/get-user.decorator';
 import { SearchStoreDto } from './dto/search-store.dto';
 
 @ApiTags('Store')
 @ApiBearerAuth('access-token')
 @Controller('store')
 export class StoreController {
-  constructor(private readonly storeService: StoreService) {}
+  constructor(private readonly storeService: StoreService) { }
 
   // 상점 생성, 수정, 삭제, 판매량 확인, 모든 상점 조회, 특정 상점 상세 조회, 상점 검색
 
