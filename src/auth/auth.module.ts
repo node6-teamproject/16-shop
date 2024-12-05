@@ -5,8 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { UserModule } from 'src/user/user.module';
-import { StoreModule } from 'src/store/store.module';
+import { UserModule } from '../user/user.module';
+import { StoreModule } from '../store/store.module';
 import { RolesGuard } from './guards/roles.guard';
 
 @Module({

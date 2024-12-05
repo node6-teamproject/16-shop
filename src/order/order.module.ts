@@ -4,12 +4,12 @@ import { OrderController } from './order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { Order } from './entities/order.entity';
-import { UserModule } from 'src/user/user.module';
-import { AuthModule } from 'src/auth/auth.module';
-import { User } from 'src/user/entities/user.entity';
-import { StoreProduct } from 'src/store-product/entities/store-product.entity';
+import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
+import { User } from '../user/entities/user.entity';
+import { StoreProduct } from '../store-product/entities/store-product.entity';
 import { ScheduleModule } from '@nestjs/schedule';
-import { CartItemModule } from 'src/cart-item/cart-item.module';
+import { CartItemModule } from '../cart-item/cart-item.module';
 
 @Module({
   imports: [

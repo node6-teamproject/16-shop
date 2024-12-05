@@ -1,9 +1,9 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { StoreModule } from 'src/store/store.module';
-import { ReviewModule } from 'src/review/review.module';
-import { OrderModule } from 'src/order/order.module';
-import { CartItemModule } from 'src/cart-item/cart-item.module';
+import { StoreModule } from '../store/store.module';
+import { ReviewModule } from '../review/review.module';
+import { OrderModule } from '../order/order.module';
+import { CartItemModule } from '../cart-item/cart-item.module';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';

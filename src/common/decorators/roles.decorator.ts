@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { UserRole } from 'src/user/entities/user.entity';
+import { UserRole } from '../../user/entities/user.entity';
 
 // 권한 데코레이터
 // 데코레이터는 컨트롤러나 메소드에 추가 기능 부여

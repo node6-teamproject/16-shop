@@ -1,4 +1,4 @@
-import { UserInfo } from 'src/utils/userInfo.decorator';
+import { UserInfo } from '../utils/userInfo.decorator';
 import {
   Body,
   Controller,
@@ -17,7 +17,7 @@ import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChangeDto } from './dto/change.dto';
 import { CashDto } from './dto/cash.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
