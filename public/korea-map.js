@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: 'Jeju', korName: '제주도', color: '#7f8c8d', icon: '🌴', description: '아름다운 자연과 독특한 문화가 있는 관광의 섬입니다.' }
     ];
 
+// 광역시 색상 설정 추가
+const metropolitanCities = [
+    { id: 'KR-28', color: '#3498db' },  // 인천 (경기도 색)
+    { id: 'KR-30', color: '#27ae60' },  // 대전 (충남 색)
+    { id: 'KR-29', color: '#e67e22' },  // 광주 (전남 색)
+    { id: 'KR-27', color: '#1abc9c' },  // 대구 (경북 색)
+    { id: 'KR-31', color: '#d35400' },  // 울산 (경남 색)
+    { id: 'KR-26', color: '#d35400' },  // 부산 (경남 색)
+];
+
     // 좌우 지역 목록 생성
     const leftList = document.querySelector('.region-list.left');
     const rightList = document.querySelector('.region-list.right');
@@ -42,20 +52,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const paths = svgDoc.querySelectorAll('path');
         
         paths.forEach(path => {
+            const pathId = path.getAttribute('id');
             const region = regions.find(r => r.name === path.getAttribute('title'));
+            const metro = metropolitanCities.find(m => m.id === pathId);
+            
             if (region) {
                 path.style.fill = region.color;
-                path.style.stroke = '#FFFFFF';
-                path.style.strokeWidth = '1';
-                
-                // 호버 효과
-                path.addEventListener('mouseover', () => {
-                    path.style.opacity = '0.8';
-                });
-                path.addEventListener('mouseout', () => {
-                    path.style.opacity = '1';
-                });
+            } else if (metro) {
+                path.style.fill = metro.color;
             }
+            
+            path.style.stroke = '#FFFFFF';
+            path.style.strokeWidth = '1';
         });
     });
 });
