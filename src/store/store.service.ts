@@ -227,11 +227,10 @@ export class StoreService {
         'store_products.price',
         'local_specialty.id',
         'local_specialty.name',
-      ])
-      .where('store.deleted_at IS NULL');
+      ]);
 
     if (keyword && keyword !== '') {
-      query.andWhere('(store.name LIKE :keyword OR local_specialty.name LIKE :keyword)', {
+      query.where('(store.name LIKE :keyword OR local_specialty.name LIKE :keyword)', {
         keyword: `%${keyword}%`,
       });
     }
