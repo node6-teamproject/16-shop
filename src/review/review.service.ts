@@ -1,12 +1,12 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Review } from './entities/review.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Store } from 'src/store/entities/store.entity';
-import { AuthUtils } from 'src/common/utils/auth.utils';
+import { Store } from '../store/entities/store.entity';
+import { AuthUtils } from '../common/utils/auth.utils';
 
 @Injectable()
 export class ReviewService {
