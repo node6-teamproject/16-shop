@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class SearchStoreDto {

@@ -1,19 +1,13 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStoreProductDto } from './dto/create-store-product.dto';
 import { UpdateStoreProductDto } from './dto/update-store-product.dto';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StoreProduct } from './entities/store-product.entity';
 import { Repository } from 'typeorm';
-import { Store } from 'src/store/entities/store.entity';
-import { LocalSpecialty } from 'src/local-specialty/entities/local-specialty.entity';
-import { AuthUtils } from 'src/common/utils/auth.utils';
+import { Store } from '../store/entities/store.entity';
+import { LocalSpecialty } from '../local-specialty/entities/local-specialty.entity';
+import { AuthUtils } from '../common/utils/auth.utils';
 
 @Injectable()
 export class StoreProductService {
@@ -36,7 +30,7 @@ export class StoreProductService {
     AuthUtils.validateLogin(user);
 
     const store = await this.storeRepository.findOne({
-      where: { id: store_id, user_id: user.id, deleted_at: null },
+      where: { id: store_id, user_id: user.id },
     });
     if (!store) {
       throw new ForbiddenException('상점에 대한 권한 X');
