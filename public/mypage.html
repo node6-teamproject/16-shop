@@ -11,27 +11,50 @@
             font-family: 'Inter', sans-serif;
         }
 
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 75px;
+            background-color: #51FF00;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: black;
+            font-size: 1.2rem;
+            font-weight: 400;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+        }
+
+        .nav a:hover {
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - 75px);
+            background: white;
+        }
+
         .Mypagebar {
             width: 285px;
-            height: 949px;
-            position: absolute;
-            left: 0px;
-            top: 75px;
+            height: 100%;
             background: white;
             border: 1px black solid;
         }
 
         .menu-text {
-            width: 145px;
-            height: 30px;
-            left: 70px;
-            position: absolute;
+            width: 100%;
             text-align: center;
             color: black;
             font-size: 32px;
-            font-family: Inter;
             font-weight: 600;
-            word-wrap: break-word;
+            padding: 15px 0;
+            cursor: pointer;
         }
 
         .menu-text.gray {
@@ -39,128 +62,98 @@
             font-size: 15px;
         }
 
-        .Emailbox,
-        .Nicknamebox,
-        .Addressbox,
-        .Phonebox,
-        .Rolebox,
-        .Cashbox {
-            width: 303px;
+        .info-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .info-box {
+            width: 100%;
+            max-width: 400px;
             height: 30px;
-            position: absolute;
             background: #D9D9D9;
-            left: 703px;
-        }
-
-        .Emailbox {
-            top: 361px;
-        }
-
-        .Nicknamebox {
-            top: 409px;
-        }
-
-        .Addressbox {
-            top: 457px;
-        }
-
-        .Phonebox {
-            top: 505px;
-        }
-
-        .Rolebox {
-            top: 603px;
-        }
-
-        .Cashbox {
-            top: 553px;
+            margin: 10px 0;
+            text-align: center;
+            line-height: 30px; /* 수직 중앙 정렬 */
         }
 
         .label {
-            position: absolute;
-            left: 703px;
             text-align: center;
             color: black;
             font-size: 15px;
-            font-family: Inter;
             font-weight: 600;
-            word-wrap: break-word;
+            margin: 5px 0;
         }
 
         .Modify {
             width: 145px;
             height: 29px;
-            position: absolute;
-            top: 651px;
-            left: 775px;
             text-align: center;
             color: black;
             font-size: 15px;
-            font-family: Inter;
             font-weight: 600;
-            word-wrap: break-word;
-        }
-
-        .Component1 {
-            width: 1440px;
-            height: 75px;
-            position: absolute;
-            top: 0px;
-            background: #51FF00;
-        }
-
-        .Tab {
-            width: 1440px;
-            height: 75px;
-            left: 0px;
-            top: 0px;
-            position: absolute;
+            margin: 20px 0;
+            cursor: pointer;
         }
 
         .menu-tab {
             height: 59px;
-            top: 18px;
-            position: absolute;
             color: black;
             font-size: 32px;
-            font-family: Inter;
             font-weight: 400;
-            word-wrap: break-word;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .menu-text {
+                font-size: 24px;
+            }
+
+            .nav a {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div style="width: 1440px; height: 1024px; position: relative; background: white">
-        <div class="Mypagebar"></div>
-        <div class="menu-text" style="top: 319px;">주문 목록</div>
-        <div class="menu-text" style="top: 390px;">리뷰 목록</div>
-        <div class="menu-text" style="top: 120px;">내 정보</div>
-        <div class="menu-text" style="top: 185px;">캐쉬 충전</div>
-        <div class="Emailbox"></div>
-        <div class="label" style="top: 343px;">이메일</div>
-        <div class="Nicknamebox"></div>
-        <div class="label" style="top: 391px;">닉네임</div>
-        <div class="Addressbox"></div>
-        <div class="label" style="top: 439px;">주소</div>
-        <div class="Phonebox"></div>
-        <div class="label" style="top: 487px;">전화번호</div>
-        <div class="Modify">수정</div>
-        <div class="Rolebox"></div>
-        <div class="label" style="top: 583px; left: 700px;">직업</div>
-        <div class="Cashbox"></div>
-        <div class="label" style="top: 535px;">캐쉬</div>
-        <div class="menu-text" style="top: 250px;">직업 변경</div>
-        <div class="Component1">
-            <div class="menu-text gray" style="top: 975px;">회원 탈퇴</div>
-            <div class="Tab"></div>
-            <div class="menu-tab" style="left: 1252px;">로그아웃</div>
-            <div class="menu-tab" style="left: 1057.68px;">마이페이지</div>
-            <div class="menu-tab" style="left: 623.52px;">상품 관리</div>
-            <div class="menu-tab" style="left: 25px;">Home</div>
-            <div class="menu-tab" style="left: 469px;">상점</div>
-            <div class="menu-tab" style="left: 297px;">특산물</div>
-            <div class="menu-tab" style="left: 829px;">주문</div>
+    <div class="nav">
+        <a href="homepage.loginafter.html">Home</a>
+        <a href="#store">상점</a>
+        <a href="#local">특산물</a>
+        <a href="#orders">주문</a>
+        <a href="#products">상품 관리</a>
+        <a href="mypage.html">마이페이지</a>
+        <a href="homepage.loginbefore.html">로그아웃</a>
+    </div>
+
+    <div class="container">
+        <div class="Mypagebar">
+            <div class="menu-text">내 정보</div>
+            <div class="menu-text">주문 목록</div>
+            <div class="menu-text">리뷰 목록</div>
+            <div class="menu-text">캐쉬 충전</div>
+            <div class="menu-text">직업 변경</div>
+            <div class="menu-text gray">회원 탈퇴</div>
+        </div>
+
+        <div class="info-container">
+            <div class="label">이메일</div>
+            <div class="info-box Emailbox"></div>
+            <div class="label">닉네임</div>
+            <div class="info-box Nicknamebox"></div>
+            <div class="label">주소</div>
+            <div class="info-box Addressbox"></div>
+            <div class="label">전화번호</div>
+            <div class="info-box Phonebox"></div>
+            <div class="label">직업</div>
+            <div class="info-box Rolebox"></div>
+            <div class="label">캐쉬</div>
+            <div class="info-box Cashbox"></div>
+            <div class="Modify">수정</div>
         </div>
     </div>
 
