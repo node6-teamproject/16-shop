@@ -143,19 +143,19 @@
             <button type="submit">로그인</button>
         </form>
         <div class="hint">
-            계정이 없으신가요? <a href="/register.html">회원가입</a>
+            계정이 없으신가요? <a href="register.html">회원가입</a>
         </div>
     </div>
 
     <script>
         const form = document.getElementById('loginForm');
-
+    
         form.addEventListener('submit', async (event) => {
             event.preventDefault(); // 폼 기본 동작 방지
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
+    
             try {
                 const response = await fetch('/user/sign-in', {
                     method: 'POST',
@@ -164,17 +164,19 @@
                     },
                     body: JSON.stringify({ email, password }),
                 });
-
+    
                 if (response.ok) {
                     const data = await response.json();
                     const token = data.access_token;
-
-                    // JWT 토큰을 로컬스토리지에 저장
+                    const userId = data.user_id; // 사용자 ID를 받아온다고 가정
+    
+                    // JWT 토큰과 사용자 ID를 로컬스토리지에 저장
                     localStorage.setItem('token', token);
-
+                    localStorage.setItem('userId', userId); // 사용자 ID 저장
+    
                     alert('로그인 성공!');
                     
-                    // 로그인 성공 후 리다이렉트 (예: 홈 페이지)
+                    // 로그인 성공 후 리다이렉트
                     window.location.href = '/homepage.loginafter.html';
                 } else {
                     const error = await response.json();

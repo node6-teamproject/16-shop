@@ -134,7 +134,20 @@
         <a href="#orders">주문</a>
         <a href="#products">상품 관리</a>
         <a href="mypage.html">마이페이지</a>
-        <a href="homepage.loginbefore.html">로그아웃</a>
+        <a href="#" id="logoutButton">로그아웃</a>
     </nav>
+    <script>
+        function logout() {
+            localStorage.removeItem('token'); // 토큰 삭제
+            localStorage.removeItem('userId'); // 사용자 ID 삭제
+            window.location.href = 'homepage.loginbefore.html'; // 로그인 페이지로 리다이렉트
+        }
+    
+        // 로그아웃 버튼 클릭 시 logout 함수 호출
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault(); // 기본 링크 클릭 동작 방지
+            logout(); // logout 함수 호출
+        });
+    </script>
 </body>
 </html>

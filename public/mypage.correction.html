@@ -162,20 +162,16 @@
         </div>
 
         <div class="info-container">
-            <div class="label">이메일</div>
-            <div class="info-box Emailbox"></div>
             <div class="label">닉네임</div>
-            <div class="info-box Nicknamebox"></div>
+            <input type="text" id="nickname" class="info-box Nicknamebox" placeholder="닉네임을 입력하세요">
             <div class="label">주소</div>
-            <div class="info-box Addressbox"></div>
+            <input type="text" id="address" class="info-box Addressbox" placeholder="주소를 입력하세요">
             <div class="label">전화번호</div>
-            <div class="info-box Phonebox"></div>
-            <div class="label">직업</div>
-            <div class="info-box Rolebox"></div>
-            <div class="label">캐쉬</div>
-            <div class="info-box Cashbox"></div>
+            <input type="text" id="phone" class="info-box Phonebox" placeholder="전화번호를 입력하세요">
+            <div class="label">비밀번호</div>
+            <input type="password" id="password" class="info-box Passwordbox" placeholder="비밀번호를 입력하세요">
             <div class="correction">
-                <a href="mypage.correction.html">수정</a>
+                <button id="updateButton">확인</button>
             </div>
         </div>
     </div>
@@ -192,37 +188,54 @@
             event.preventDefault(); // 기본 링크 클릭 동작 방지
             logout(); // logout 함수 호출
         });
-        
-        async function fetchUserInfo() {
+        // URL에서 사용자 ID 가져오기
+        const userId = localStorage.getItem('userId');
+    
+        async function updateUserInfo() {
+            // 사용자 ID가 없으면 경고
+            if (!userId) {
+                alert('사용자 ID가 필요합니다.');
+                return;
+            }
+    
+            const nickname = document.getElementById('nickname').value;
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value; // 비밀번호 가져오기
+    
+            // 업데이트할 데이터
+            const updateDto = { nickname, address, phone, password }; // 비밀번호 포함
+    
             try {
-                const response = await fetch('/user/userinfo', {
-                    method: 'GET',
+                const response = await fetch(`/user/${userId}`, {
+                    method: 'PATCH',
                     headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token'), // JWT 토큰을 헤더에 추가
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'), // JWT 토큰
                     },
+                    body: JSON.stringify(updateDto),
                 });
-
+    
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    const errorMessage = await response.text();
+                    console.error('Error updating user info:', response.status, errorMessage);
+                    alert('정보 업데이트에 실패했습니다.');
+                    return;
                 }
-
-                const { data } = await response.json();
-
-                // HTML 요소에 데이터 출력
-                document.querySelector('.Emailbox').textContent = data.email || 'N/A';
-                document.querySelector('.Nicknamebox').textContent = data.nickname || 'N/A';
-                document.querySelector('.Addressbox').textContent = data.address || 'N/A';
-                document.querySelector('.Phonebox').textContent = data.phone || 'N/A';
-                document.querySelector('.Rolebox').textContent = data.role || 'N/A';
-                document.querySelector('.Cashbox').textContent = data.cash || 'N/A';
-                console.log(data)
+    
+                const result = await response.json();
+                alert(result.message); // 성공 메시지
+    
+                // 업데이트 후 mypage.html로 이동
+                window.location.href = 'mypage.html';
+    
             } catch (error) {
-                console.error('Error fetching user info:', error);
+                console.error('Error:', error);
+                alert('정보 업데이트 중 오류가 발생했습니다.');
             }
         }
-
-        // 페이지가 로드될 때 사용자 정보 가져오기
-        window.onload = fetchUserInfo;
+    
+        document.getElementById('updateButton').addEventListener('click', updateUserInfo);
     </script>
 </body>
 

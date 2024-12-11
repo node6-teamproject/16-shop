@@ -162,24 +162,13 @@
         </div>
 
         <div class="info-container">
-            <div class="label">이메일</div>
-            <div class="info-box Emailbox"></div>
-            <div class="label">닉네임</div>
-            <div class="info-box Nicknamebox"></div>
-            <div class="label">주소</div>
-            <div class="info-box Addressbox"></div>
-            <div class="label">전화번호</div>
-            <div class="info-box Phonebox"></div>
-            <div class="label">직업</div>
-            <div class="info-box Rolebox"></div>
-            <div class="label">캐쉬</div>
-            <div class="info-box Cashbox"></div>
+            <div class="label">금액</div>
+            <input type="text" id="cash" class="info-box Cashbox" placeholder="충전할 금액을 입력하세요">
             <div class="correction">
-                <a href="mypage.correction.html">수정</a>
+                <button id="updateButton">확인</button>
             </div>
         </div>
     </div>
-
     <script>
         function logout() {
             localStorage.removeItem('token'); // 토큰 삭제
@@ -192,38 +181,41 @@
             event.preventDefault(); // 기본 링크 클릭 동작 방지
             logout(); // logout 함수 호출
         });
-        
-        async function fetchUserInfo() {
-            try {
-                const response = await fetch('/user/userinfo', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token'), // JWT 토큰을 헤더에 추가
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const { data } = await response.json();
-
-                // HTML 요소에 데이터 출력
-                document.querySelector('.Emailbox').textContent = data.email || 'N/A';
-                document.querySelector('.Nicknamebox').textContent = data.nickname || 'N/A';
-                document.querySelector('.Addressbox').textContent = data.address || 'N/A';
-                document.querySelector('.Phonebox').textContent = data.phone || 'N/A';
-                document.querySelector('.Rolebox').textContent = data.role || 'N/A';
-                document.querySelector('.Cashbox').textContent = data.cash || 'N/A';
-                console.log(data)
-            } catch (error) {
-                console.error('Error fetching user info:', error);
+        document.getElementById('updateButton').addEventListener('click', async () => {
+            const cash = document.getElementById('cash').value;
+    
+            // 입력된 금액이 비어있거나 숫자가 아닐 경우 처리
+            if (!cash || isNaN(cash) || cash <= 0) {
+                alert('유효한 금액을 입력하세요.');
+                return;
             }
-        }
-
-        // 페이지가 로드될 때 사용자 정보 가져오기
-        window.onload = fetchUserInfo;
+    
+            try {
+                const response = await fetch('/user/cash', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'), // JWT 토큰
+                    },
+                    body: JSON.stringify({ cash: Number(cash) }), // 숫자로 변환하여 전송
+                });
+    
+                if (!response.ok) {
+                    const errorMessage = await response.json();
+                    alert(errorMessage.message || '충전 실패');
+                    return;
+                }
+    
+                const result = await response.json();
+                alert(result.message); // 성공 메시지
+                // 필요시 페이지 리프레시 또는 다른 행동 추가
+            } catch (error) {
+                console.error('Error during cash recharge:', error);
+                alert('충전 요청 중 오류가 발생했습니다.');
+            }
+        });
     </script>
+ 
 </body>
 
 </html>
