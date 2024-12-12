@@ -38,7 +38,7 @@ export class LocalSpecialtyCrawler {
   }
 
   private async crawlByIndex(index: number) {
-    this.logger.log('poiru');
+    this.logger.log('lopoi');
     try {
       this.logger.log('크롤링 시작------------ ');
       const url = `http://www.traveli.co.kr/area/show/${index}`;
@@ -78,7 +78,7 @@ export class LocalSpecialtyCrawler {
       for (const [key, value] of Object.entries(this.REGION_MAP)) {
         if (regionFullName.includes(key)) {
           region = value;
-          break; // 매칭되면 반복 중단
+          break;
         }
       }
 
@@ -99,16 +99,15 @@ export class LocalSpecialtyCrawler {
             imageUrl,
           };
         })
-        .get(); // cheerio 객체를 일반 배열로 변환
+        .get();
 
-      // 모든 특산물 처리를 동시에 실행
       await Promise.all(
         specialties.map(async (specialty) => {
           const existing = await this.localSpecialty.findOne({
             where: {
               name: specialty.name,
               region: specialty.region,
-              city: specialty.city, // 시/군까지 포함하여 중복 체크
+              city: specialty.city,
             },
           });
 
