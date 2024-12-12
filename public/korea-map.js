@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (region) {
         path.style.fill = region.color;
-        path.setAttribute('data-region', region.name); // 데이터 속성 추가
+        path.setAttribute('data-region', region.name);
       } else if (metro) {
         path.style.fill = metro.color;
-        path.setAttribute('data-region', metro.id); // 데이터 속성 추가
+        path.setAttribute('data-region', metro.id);
       }
 
       path.style.stroke = '#FFFFFF';
@@ -134,13 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // 선택된 지역 이름 콘솔 출력 (테스트용)
         console.log(`Selected Region ID or Name : ${this.getAttribute('data-region')}`);
-        
-        // 여기에 특산물 표시 로직을 추가할 수 있습니다.
-        // 예를 들어, 특정 DOM 요소에 정보를 업데이트하는 방식으로 구현 가능.
-        
-        // 특산물 목록은 그대로 유지하므로 추가 작업은 생략.
-        
-       });
-     });
-   });
+      });
+    });
+  });
 });

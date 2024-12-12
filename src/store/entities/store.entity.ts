@@ -1,6 +1,6 @@
-import { Review } from 'src/review/entities/review.entity';
-import { StoreProduct } from 'src/store-product/entities/store-product.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Review } from '../../review/entities/review.entity';
+import { StoreProduct } from '../../store-product/entities/store-product.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -15,7 +15,6 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Index(['name', 'deleted_at'], { unique: true })
 export class Store {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -58,9 +57,6 @@ export class Store {
 
   @UpdateDateColumn({ nullable: true })
   updated_at?: Date;
-
-  @DeleteDateColumn({ nullable: true })
-  deleted_at?: Date;
 
   @OneToOne(() => User, (user) => user.store, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })

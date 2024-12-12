@@ -9,9 +9,9 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
 import { Repository } from 'typeorm';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { SearchStoreDto } from './dto/search-store.dto';
-import { AuthUtils } from 'src/common/utils/auth.utils';
+import { AuthUtils } from '../common/utils/auth.utils';
 
 // TODO: 상점 판매량 확인 함수 구현
 @Injectable()
@@ -32,7 +32,7 @@ export class StoreService {
 
     // 현재 사용자의 활성화된 상점이 있는지 확인
     const existingUserStore = await this.storeRepository.findOne({
-      where: { user_id: user.id, deleted_at: null },
+      where: { user_id: user.id },
     });
 
     if (existingUserStore) {
@@ -41,7 +41,7 @@ export class StoreService {
 
     // 같은 이름의 활성화된 상점이 있는지 확인
     const existedStore = await this.storeRepository.findOne({
-      where: { name, deleted_at: null },
+      where: { name },
     });
 
     if (existedStore) {
@@ -68,7 +68,7 @@ export class StoreService {
     AuthUtils.validateLogin(user);
 
     const existedStore = await this.storeRepository.findOne({
-      where: { id, deleted_at: null },
+      where: { id },
     });
 
     if (!existedStore) {
@@ -82,7 +82,7 @@ export class StoreService {
     const { name } = updateStoreDto;
     if (name && name !== existedStore.name) {
       const existingStore = await this.storeRepository.findOne({
-        where: { name, deleted_at: null },
+        where: { name },
       });
 
       if (existingStore) {
@@ -101,7 +101,7 @@ export class StoreService {
     AuthUtils.validateLogin(user);
 
     const store = await this.storeRepository.findOne({
-      where: { id, deleted_at: null },
+      where: { id },
     });
 
     if (!store) {
@@ -112,7 +112,7 @@ export class StoreService {
       throw new ForbiddenException('상점 삭제에 대한 권한 X');
     }
 
-    await this.storeRepository.softDelete(id);
+    await this.storeRepository.delete(id);
 
     return `${store.name} 상점이 삭제됨`;
   }
@@ -124,14 +124,11 @@ export class StoreService {
   // 모든 상점들 조회 시 각 상점 이름, 상점에서 판매하는 특산품, 리뷰 평균 점수, 리뷰 개수를 보여줘야 함
   async findAllStores() {
     const stores = await this.storeRepository.find({
-      where: { deleted_at: null },
       relations: {
-        // store와 연관 관계 있는 테이블과 join
         store_products: {
-          //storeProduct 테이블과 join
-          local_specialty: true, // localSpecialty 테이블과 join
+          local_specialty: true,
         },
-        reviews: true, // review 테이블과 join
+        reviews: true,
       },
       select: {
         id: true,
@@ -139,6 +136,7 @@ export class StoreService {
         rating: true,
         review_count: true,
         store_products: {
+          price: true,
           local_specialty: { id: true, name: true },
         },
       },
@@ -151,9 +149,10 @@ export class StoreService {
     return stores.map((store) => ({
       id: store.id,
       name: store.name,
-      local_specialties: (store.store_products || []).map((product) => ({
+      local_specialties: store.store_products.map((product) => ({
         id: product.local_specialty.id,
         name: product.local_specialty.name,
+        price: product.price,
       })),
       review_stats: {
         // 상점의 평점 출력
@@ -167,7 +166,7 @@ export class StoreService {
   // 특정 상점 상세 조회 시 상점 이름, 상점 소개, 상점에서 판매하는 모든 특산품, 리뷰 평균 점수, 주소, 연락처, 이미지, 위도, 경도를 보여줘야 함
   async findStoreById(id: number) {
     const stores = await this.storeRepository.find({
-      where: { id, deleted_at: null },
+      where: { id },
       relations: {
         store_products: {
           local_specialty: true,
@@ -228,11 +227,10 @@ export class StoreService {
         'store_products.price',
         'local_specialty.id',
         'local_specialty.name',
-      ])
-      .where('store.deleted_at IS NULL');
+      ]);
 
     if (keyword && keyword !== '') {
-      query.andWhere('(store.name LIKE :keyword OR local_specialty.name LIKE :keyword)', {
+      query.where('(store.name LIKE :keyword OR local_specialty.name LIKE :keyword)', {
         keyword: `%${keyword}%`,
       });
     }
@@ -243,9 +241,6 @@ export class StoreService {
         .take(limit)
         .skip((page - 1) * limit)
         .getMany();
-
-      console.log('Search keyword:', keyword); // 디버깅용
-      console.log('Found stores:', stores); // 디버깅용
 
       const formattedStores = stores.map((store) => ({
         id: store.id,

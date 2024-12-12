@@ -1,5 +1,5 @@
-import { OrderItem } from 'src/order/entities/order-item.entity';
-import { User } from 'src/user/entities/user.entity';
+import { OrderItem } from '../../order/entities/order-item.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -48,7 +48,7 @@ export class Order {
   @Column({ type: 'enum', enum: OrderMethod })
   order_method: OrderMethod;
 
-  @Column({ type: 'bigint', default: 0 })
+  @Column({ default: 0 })
   total_cash: number;
 
   @Column({
