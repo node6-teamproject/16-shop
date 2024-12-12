@@ -3,16 +3,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Region } from '../types/region.type';
-import { StoreProduct } from '../../store-product/entities/store-product.entity';
 import { SpecialtySeason } from '../types/season.type';
 
 @Entity('local_specialty')
-export class LocalSpecialty {
+export class CrawlLocalSpecialty {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
@@ -49,7 +47,4 @@ export class LocalSpecialty {
 
   @DeleteDateColumn({ nullable: true })
   deleted_at?: Date;
-
-  @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.local_specialty)
-  store_products: StoreProduct[];
 }
