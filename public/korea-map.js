@@ -65,24 +65,22 @@ document.addEventListener('DOMContentLoaded', function () {
     },
   ];
 
+  // 광역시 색상 설정 추가
+  const metropolitanCities = [
+    { id: 'KR-28', color: '#3498db' }, // 인천 (경기도 색)
+    { id: 'KR-30', color: '#27ae60' }, // 대전 (충남 색)
+    { id: 'KR-29', color: '#e67e22' }, // 광주 (전남 색)
+    { id: 'KR-27', color: '#1abc9c' }, // 대구 (경북 색)
+    { id: 'KR-31', color: '#d35400' }, // 울산 (경남 색)
+    { id: 'KR-26', color: '#d35400' }, // 부산 (경남 색)
+  ];
 
-// 광역시 색상 설정 추가
-const metropolitanCities = [
-    { id: 'KR-28', color: '#3498db' },  // 인천 (경기도 색)
-    { id: 'KR-30', color: '#27ae60' },  // 대전 (충남 색)
-    { id: 'KR-29', color: '#e67e22' },  // 광주 (전남 색)
-    { id: 'KR-27', color: '#1abc9c' },  // 대구 (경북 색)
-    { id: 'KR-31', color: '#d35400' },  // 울산 (경남 색)
-    { id: 'KR-26', color: '#d35400' },  // 부산 (경남 색)
-];
-  
-    // 좌우 지역 목록 생성
-    const leftList = document.querySelector('.region-list.left');
-    const rightList = document.querySelector('.region-list.right');
-    
-    regions.forEach((region, index) => {
-        const regionElement = `
+  // 좌우 지역 목록 생성
+  const leftList = document.querySelector('.region-list.left');
+  const rightList = document.querySelector('.region-list.right');
 
+  regions.forEach((region, index) => {
+    const regionElement = `
             <div class="region-item">
                 <div class="region-icon" style="background-color: ${region.color}">
                     ${region.icon}
@@ -94,27 +92,55 @@ const metropolitanCities = [
             </div>
         `;
 
-    // SVG 지도 색상 설정
-    const svgObject = document.getElementById('korea-map');
-    svgObject.addEventListener('load', function() {
-        const svgDoc = svgObject.contentDocument;
-        const paths = svgDoc.querySelectorAll('path');
-        
-        paths.forEach(path => {
-            const pathId = path.getAttribute('id');
-            const region = regions.find(r => r.name === path.getAttribute('title'));
-            const metro = metropolitanCities.find(m => m.id === pathId);
-            
-            if (region) {
-                path.style.fill = region.color;
-            } else if (metro) {
-                path.style.fill = metro.color;
-            }
-            
-            path.style.stroke = '#FFFFFF';
-            path.style.strokeWidth = '1';
-        });
-      }
-    });
+    // 좌우 목록에 지역 추가
+    const listElement = index < regions.length / 2 ? leftList : rightList;
+    listElement.innerHTML += regionElement;
   });
+
+  // SVG 지도 색상 설정 및 클릭 이벤트 추가
+  const svgObject = document.getElementById('korea-map');
+  svgObject.addEventListener('load', function () {
+    const svgDoc = svgObject.contentDocument;
+    const paths = svgDoc.querySelectorAll('path');
+
+    paths.forEach((path) => {
+      const pathId = path.getAttribute('id');
+      const region = regions.find((r) => r.name === path.getAttribute('title'));
+      const metro = metropolitanCities.find((m) => m.id === pathId);
+
+      if (region) {
+        path.style.fill = region.color;
+        path.setAttribute('data-region', region.name); // 데이터 속성 추가
+      } else if (metro) {
+        path.style.fill = metro.color;
+        path.setAttribute('data-region', metro.id); // 데이터 속성 추가
+      }
+
+      path.style.stroke = '#FFFFFF';
+      path.style.strokeWidth = '1';
+
+      // 클릭 이벤트 추가
+      path.addEventListener('click', function () {
+        // 모든 지역 초기화
+        paths.forEach(p => {
+          p.style.transform = '';
+          p.style.filter = '';
+        });
+
+        // 클릭된 지역 활성화
+        this.style.transform = 'translate(10px, -10px) scale(1.2)';
+        this.style.filter = 'drop-shadow(3px 3px 5px rgba(0,0,0,0.5))';
+        this.style.transition = 'all 0.3s ease-out';
+        
+        // 선택된 지역 이름 콘솔 출력 (테스트용)
+        console.log(`Selected Region ID or Name : ${this.getAttribute('data-region')}`);
+        
+        // 여기에 특산물 표시 로직을 추가할 수 있습니다.
+        // 예를 들어, 특정 DOM 요소에 정보를 업데이트하는 방식으로 구현 가능.
+        
+        // 특산물 목록은 그대로 유지하므로 추가 작업은 생략.
+        
+       });
+     });
+   });
 });
