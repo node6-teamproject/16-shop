@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   regions.forEach((region, index) => {
     const regionElement = `
-
             <div class="region-item">
                 <div class="region-icon" style="background-color: ${region.color}">
                     ${region.icon}
@@ -93,32 +92,49 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
 
-    // SVG 지도 색상 설정
-    const svgObject = document.getElementById('korea-map');
-    svgObject.addEventListener('load', function () {
-      const svgDoc = svgObject.contentDocument;
-      const paths = svgDoc.querySelectorAll('path');
-
-      paths.forEach((path) => {
-        const pathId = path.getAttribute('id');
-        const region = regions.find((r) => r.name === path.getAttribute('title'));
-        const metro = metropolitanCities.find((m) => m.id === pathId);
-
-        if (region) {
-          path.style.fill = region.color;
-        } else if (metro) {
-          path.style.fill = metro.color;
-        }
-
-        path.style.stroke = '#FFFFFF';
-        path.style.strokeWidth = '1';
-      });
-    });
-
     // 좌우 목록에 지역 추가
-    regions.forEach((region, index) => {
-      const listElement = index < regions.length / 2 ? leftList : rightList;
-      listElement.innerHTML += regionElement;
+    const listElement = index < regions.length / 2 ? leftList : rightList;
+    listElement.innerHTML += regionElement;
+  });
+
+  // SVG 지도 색상 설정 및 클릭 이벤트 추가
+  const svgObject = document.getElementById('korea-map');
+  svgObject.addEventListener('load', function () {
+    const svgDoc = svgObject.contentDocument;
+    const paths = svgDoc.querySelectorAll('path');
+
+    paths.forEach((path) => {
+      const pathId = path.getAttribute('id');
+      const region = regions.find((r) => r.name === path.getAttribute('title'));
+      const metro = metropolitanCities.find((m) => m.id === pathId);
+
+      if (region) {
+        path.style.fill = region.color;
+        path.setAttribute('data-region', region.name);
+      } else if (metro) {
+        path.style.fill = metro.color;
+        path.setAttribute('data-region', metro.id);
+      }
+
+      path.style.stroke = '#FFFFFF';
+      path.style.strokeWidth = '1';
+
+      // 클릭 이벤트 추가
+      path.addEventListener('click', function () {
+        // 모든 지역 초기화
+        paths.forEach(p => {
+          p.style.transform = '';
+          p.style.filter = '';
+        });
+
+        // 클릭된 지역 활성화
+        this.style.transform = 'translate(10px, -10px) scale(1.2)';
+        this.style.filter = 'drop-shadow(3px 3px 5px rgba(0,0,0,0.5))';
+        this.style.transition = 'all 0.3s ease-out';
+        
+        // 선택된 지역 이름 콘솔 출력 (테스트용)
+        console.log(`Selected Region ID or Name : ${this.getAttribute('data-region')}`);
+      });
     });
   });
 });
