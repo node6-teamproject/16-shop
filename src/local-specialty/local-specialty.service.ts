@@ -20,7 +20,6 @@ const SPECIALTY_SELECT_FIELDS = {
     description: true,
     season_info: true,
     region: true,
-    created_at: true,
   },
 } as const;
 
