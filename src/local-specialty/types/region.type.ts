@@ -6,7 +6,7 @@ export enum Region {
   GWANGJU = '광주광역시',
   DAEJUN = '대전광역시',
   ULSAN = '울산광역시',
-  SEJONG = '세종특별자치치시',
+  SEJONG = '세종특별자치시',
   GYEONGGI = '경기도',
   GANGWON = '강원도',
   CHUNGBUK = '충청북도',
