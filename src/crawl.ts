@@ -4,7 +4,11 @@ import { CrawlLocalSpecialty } from './local-specialty/entities/local-specialty.
 import { LocalSpecialtyCrawler } from './local-specialty/crawler/local-specialty.crawler';
 import { Command, CommandRunner, CommandFactory } from 'nest-commander';
 import { NestFactory } from '@nestjs/core';
+<<<<<<< HEAD
 import { ConfigService } from '@nestjs/config';
+=======
+import { ConfigModule, ConfigService } from '@nestjs/config';
+>>>>>>> 87616e2182c07be03e1cbd3f17f121b24e1f9a3a
 
 @Command({ name: 'crawl-specialty', description: '지역 특산물 데이터 크롤링' })
 export class CrawlSpecialtyCommand extends CommandRunner {
@@ -27,6 +31,7 @@ export class CrawlSpecialtyCommand extends CommandRunner {
 
 @Module({
   imports: [
+<<<<<<< HEAD
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'express-database.c7ymgsmm8n9i.ap-northeast-2.rds.amazonaws.com',
@@ -38,6 +43,27 @@ export class CrawlSpecialtyCommand extends CommandRunner {
       autoLoadEntities: true,
       synchronize: false,
       logging: true,
+=======
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [CrawlLocalSpecialty],
+        autoLoadEntities: true,
+        synchronize: false,
+        logging: true,
+      }),
+>>>>>>> 87616e2182c07be03e1cbd3f17f121b24e1f9a3a
     }),
     TypeOrmModule.forFeature([CrawlLocalSpecialty]),
   ],

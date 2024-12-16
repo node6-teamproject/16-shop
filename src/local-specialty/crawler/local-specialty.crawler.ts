@@ -11,6 +11,14 @@ import { SpecialtySeason } from '../types/season.type';
 export class LocalSpecialtyCrawler {
   private readonly logger = new Logger(LocalSpecialtyCrawler.name);
   private readonly REGION_MAP = {
+    서울특별시: Region.SEOUL,
+    부산광역시: Region.BUSAN,
+    대구광역시: Region.DAEGU,
+    인천광역시: Region.INCHEON,
+    광주광역시: Region.GWANGJU,
+    대전광역시: Region.DAEJUN,
+    울산광역시: Region.ULSAN,
+    세종특별자치시: Region.SEJONG,
     강원도: Region.GANGWON,
     경기도: Region.GYEONGGI,
     충청북도: Region.CHUNGBUK,
@@ -19,7 +27,7 @@ export class LocalSpecialtyCrawler {
     전라남도: Region.JEONNAM,
     경상북도: Region.GYEONGBUK,
     경상남도: Region.GYEONGNAM,
-    제주도: Region.JEJU,
+    제주특별자치도: Region.JEJU,
   };
 
   constructor(
@@ -38,23 +46,13 @@ export class LocalSpecialtyCrawler {
   }
 
   private async crawlByIndex(index: number) {
-    this.logger.log('lopoi');
+    this.logger.log('poiru');
     try {
       this.logger.log('크롤링 시작------------ ');
       const url = `http://www.traveli.co.kr/area/show/${index}`;
 
       this.logger.log('poi');
-      const response = await axios.get(url, {
-        timeout: 5000,
-        headers: {
-          'User-Agent': 'Chrome/91.0.4472.124',
-          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
-        },
-        validateStatus: function (status) {
-          return status >= 200 && status < 300;
-        },
-      });
+      const response = await axios.get(url);
 
       const $ = cheerio.load(response.data);
 
@@ -78,7 +76,7 @@ export class LocalSpecialtyCrawler {
       for (const [key, value] of Object.entries(this.REGION_MAP)) {
         if (regionFullName.includes(key)) {
           region = value;
-          break;
+          break; // 매칭되면 반복 중단
         }
       }
 
@@ -99,15 +97,16 @@ export class LocalSpecialtyCrawler {
             imageUrl,
           };
         })
-        .get();
+        .get(); // cheerio 객체를 일반 배열로 변환
 
+      // 모든 특산물 처리를 동시에 실행
       await Promise.all(
         specialties.map(async (specialty) => {
           const existing = await this.localSpecialty.findOne({
             where: {
               name: specialty.name,
               region: specialty.region,
-              city: specialty.city,
+              city: specialty.city, // 시/군까지 포함하여 중복 체크
             },
           });
 
