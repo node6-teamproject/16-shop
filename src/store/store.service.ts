@@ -62,6 +62,18 @@ export class StoreService {
     return `${storeOwner.nickname}이 ${name}으로 상점 생성`;
   }
 
+  async findStoreByUserId(userId: number): Promise<Store> {
+    const store = await this.storeRepository.findOne({
+        where: { user_id: userId }, // user_id로 상점 검색
+    });
+
+    if (!store) {
+        throw new NotFoundException('해당 사용자의 상점이 존재하지 않습니다.');
+    }
+
+    return store;
+}
+
   // 상점 정보 수정
   async updateStore(id: number, user: User, updateStoreDto: UpdateStoreDto) {
     // 로그인 체크
@@ -92,7 +104,7 @@ export class StoreService {
 
     await this.storeRepository.update(id, updateStoreDto);
 
-    return `${existedStore.name} 상점 정보 수정`;
+    return { message: `${existedStore.name} 상점 정보가 수정되었습니다.` };
   }
 
   // 상점 삭제
@@ -114,7 +126,7 @@ export class StoreService {
 
     await this.storeRepository.delete(id);
 
-    return `${store.name} 상점이 삭제됨`;
+    return { message: `${store.name} 삭제` };
   }
 
   // 상점 판매량 확인
