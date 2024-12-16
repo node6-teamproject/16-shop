@@ -120,6 +120,7 @@
             mapColor: '#3498db',
             icon: '🏢',
             description: '대한민국의 수도권 중심지입니다.',
+            specialtyCount: 4
           },
           {
             name: 'Gangwon',
@@ -128,6 +129,7 @@
             mapColor: '#e74c3c',
             icon: '⛰️',
             description: '아름다운 산과 바다가 있는 관광의 중심지입니다.',
+            specialtyCount: 8
           },
           {
             name: 'North Chungcheong',
@@ -136,6 +138,7 @@
             mapColor: '#f1c40f',
             icon: '⛰️',
             description: '내륙 중심의 교통과 물류의 요충지입니다.',
+            specialtyCount: 3
           },
           {
             name: 'South Chungcheong',
@@ -144,6 +147,7 @@
             mapColor: '#27ae60',
             icon: '🌊',
             description: '서해안의 수산업과 농업이 발달한 지역입니다.',
+            specialtyCount: 5
           },
           {
             name: 'North Jeolla',
@@ -152,6 +156,7 @@
             mapColor: '#9b59b6',
             icon: '🍚',
             description: '한국 전통 음식의 본고장입니다.',
+            specialtyCount: 6
           },
           {
             name: 'South Jeolla',
@@ -160,6 +165,7 @@
             mapColor: '#e67e22',
             icon: '🌾',
             description: '비옥한 평야와 청정 해역을 보유한 지역입니다.',
+            specialtyCount: 7
           },
           {
             name: 'North Gyeongsang',
@@ -168,6 +174,7 @@
             mapColor: '#1abc9c',
             icon: '⛰️',
             description: '한국의 전통문화와 역사가 살아있는 곳입니다.',
+            specialtyCount: 5
           },
           {
             name: 'South Gyeongsang',
@@ -176,8 +183,8 @@
             mapColor: '#d35400',
             icon: '🏠',
             description: '항만 물류와 해양 관광의 중심지입니다.',
+            specialtyCount: 6
           },
-
           {
             name: 'Jeju',
             korName: '제주도',
@@ -185,7 +192,8 @@
             mapColor: '#95a5a6',
             icon: '🌴',
             description: '아름다운 자연과 독특한 문화가 있는 관광의 섬입니다.',
-          },
+            specialtyCount: 3
+          }
         ];
 
         const leftList = document.querySelector('.region-list.left');
@@ -223,21 +231,29 @@
               path.style.stroke = '#FFFFFF';
               path.style.strokeWidth = '1';
 
-              // 지도 호버 효과
               path.addEventListener('mouseover', () => {
                 path.style.opacity = '0.7';
+                const regionItem = document.querySelector(`.region-item[data-region="${region.name}"]`);
+                const regionName = regionItem.querySelector('.region-name');
+                regionName.textContent = `${region.korName} (특산물: ${region.specialtyCount}개)`;
               });
+
               path.addEventListener('mouseout', () => {
                 path.style.opacity = '1';
+                const regionItem = document.querySelector(`.region-item[data-region="${region.name}"]`);
+                const regionName = regionItem.querySelector('.region-name');
+                regionName.textContent = region.korName;
               });
             }
           });
 
-          // 지역 아이템 호버 효과
           document.querySelectorAll('.region-item').forEach(item => {
             const regionName = item.getAttribute('data-region');
+            const region = regions.find(r => r.name === regionName);
             
             item.addEventListener('mouseover', function() {
+              const nameElement = this.querySelector('.region-name');
+              nameElement.textContent = `${region.korName} (특산물: ${region.specialtyCount}개)`;
               const path = svgDoc.querySelector(`path[title="${regionName}"]`);
               if (path) {
                 path.style.opacity = '0.7';
@@ -245,6 +261,8 @@
             });
             
             item.addEventListener('mouseout', function() {
+              const nameElement = this.querySelector('.region-name');
+              nameElement.textContent = region.korName;
               const path = svgDoc.querySelector(`path[title="${regionName}"]`);
               if (path) {
                 path.style.opacity = '1';
