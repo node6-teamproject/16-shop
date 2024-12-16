@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Region } from '../types/region.type';
 import { StoreProduct } from '../../store-product/entities/store-product.entity';
 import { SpecialtySeason } from '../types/season.type';
@@ -43,15 +35,6 @@ export class LocalSpecialty {
 
   @Column({ nullable: true })
   image?: string;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn({ nullable: true })
-  updated_at?: Date;
-
-  @DeleteDateColumn({ nullable: true })
-  deleted_at?: Date;
 
   @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.local_specialty)
   store_products: StoreProduct[];

@@ -8,9 +8,10 @@ import { StoreProduct } from 'src/store-product/entities/store-product.entity';
 import { AuthUtils } from 'src/common/utils/auth.utils';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { CartItemResponse, DeleteOptions, DeleteResult } from './types/cart-item.service.type';
+import { CartItemServiceInterface } from '../interfaces/cart-item.interface';
 
 @Injectable()
-export class CartItemService {
+export class CartItemService implements CartItemServiceInterface {
   constructor(
     @InjectRepository(CartItem)
     private readonly cartItemRepository: Repository<CartItem>,
@@ -48,10 +49,7 @@ export class CartItemService {
     const cartItem = await this.findOne(user, id);
 
     // 상품 재고 확인
-    const storeProduct = await this.validateProductStock(
-      cartItem.store_product_id,
-      updateCartItemDto.quantity,
-    );
+    await this.validateProductStock(cartItem.store_product_id, updateCartItemDto.quantity);
 
     // 수량 업데이트
     cartItem.quantity = updateCartItemDto.quantity;
@@ -59,26 +57,17 @@ export class CartItemService {
     return await this.cartItemRepository.save(cartItem);
   }
 
-  async remove(user: User, id: number): Promise<CartItemResponse> {
+  async remove(user: User, cart_item_id: number): Promise<CartItemResponse> {
     AuthUtils.validateLogin(user);
 
-    const cartItem = await this.findOne(user, id);
+    const cartItem = await this.findOne(user, cart_item_id);
     await this.deleteCartItems({ user_id: user.id, cart_item_id: cartItem.id });
-
-    const result = await this.cartItemRepository.delete({ id: cartItem.id, user_id: user.id });
-    if (result.affected === 0) {
-      throw new NotFoundException('장바구니 아이템 삭제에 실패했습니다.');
-    }
 
     return { message: '장바구니 상품 삭제 완료', cartItem };
   }
 
   async removeAll(user_id: number): Promise<CartItemResponse> {
-    const result = await this.cartItemRepository.delete({ user_id });
-
-    if (result.affected === 0) {
-      throw new NotFoundException('장바구니가 이미 비어있습니다.');
-    }
+    await this.deleteCartItems({ user_id });
 
     return { message: '장바구니를 비웠습니다.' };
   }
@@ -87,14 +76,10 @@ export class CartItemService {
     user_id: number,
     store_product_ids: number[],
   ): Promise<CartItemResponse> {
-    const result = await this.cartItemRepository.delete({
+    await this.deleteCartItems({
       user_id,
-      store_product_id: In(store_product_ids),
+      store_product_ids,
     });
-
-    if (result.affected === 0) {
-      throw new NotFoundException('삭제할 장바구니 상품이 없습니다.');
-    }
 
     return { message: '선택한 장바구니 상품들을 삭제했습니다.' };
   }
@@ -128,7 +113,6 @@ export class CartItemService {
       throw new NotFoundException('해당 상점에서 상품을 찾을 수 없습니다.');
     }
 
-    // 재고 확인만 하고 감소시키지는 않음
     if (storeProduct.stock < quantity) {
       throw new BadRequestException('재고가 부족합니다.');
     }

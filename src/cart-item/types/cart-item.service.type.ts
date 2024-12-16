@@ -11,6 +11,7 @@ export type DeleteOptions = {
   store_product_ids?: number[];
 };
 
+// 삭제의 영향(affected), 삭제의 결과값(raw)
 export type DeleteResult = {
   affected?: number;
   raw?: any;
