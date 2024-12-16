@@ -1,11 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Region } from '../types/region.type';
 import { SpecialtySeason } from '../types/season.type';
 
@@ -41,13 +34,4 @@ export class CrawlLocalSpecialty {
 
   @Column({ nullable: true })
   image?: string;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn({ nullable: true })
-  updated_at?: Date;
-
-  @DeleteDateColumn({ nullable: true })
-  deleted_at?: Date;
 }

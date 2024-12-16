@@ -80,6 +80,7 @@ export class UserService {
     const payload = { email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      user_id: user.id
     };
   }
 
