@@ -28,6 +28,14 @@ export class StoreController {
     return this.storeService.createStore(user, createStoreDto);
   }
 
+      // 사용자 ID로 상점 ID 반환
+      @UseGuards(JwtAuthGuard, RolesGuard)
+      @Get(':userId/storeid')
+      async getStoreByUserId(@Param('userId') userId: number) {
+          const store = await this.storeService.findStoreByUserId(userId);
+          return { storeId: store.id }; // 상점 ID만 반환
+      }
+
   // 상점 정보 수정
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.SELLER)
