@@ -4,6 +4,7 @@ import { CrawlLocalSpecialty } from './local-specialty/entities/local-specialty.
 import { LocalSpecialtyCrawler } from './local-specialty/crawler/local-specialty.crawler';
 import { Command, CommandRunner, CommandFactory } from 'nest-commander';
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 
 @Command({ name: 'crawl-specialty', description: '지역 특산물 데이터 크롤링' })
 export class CrawlSpecialtyCommand extends CommandRunner {
@@ -28,11 +29,11 @@ export class CrawlSpecialtyCommand extends CommandRunner {
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'express-database.c7ymgsmm8n9i.ap-northeast-2.rds.amazonaws.com',
       port: 3306,
       username: 'root',
       password: 'aaaa4321',
-      database: 'localS',
+      database: '16shop',
       entities: [CrawlLocalSpecialty],
       autoLoadEntities: true,
       synchronize: false,
