@@ -16,7 +16,6 @@ import { ConfigModule } from '@nestjs/config';
 import { configModuleValidationJoiSchema } from './configs/env-validation.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormModuleOptions } from './configs/database.config';
-import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [

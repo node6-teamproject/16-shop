@@ -1,9 +1,9 @@
-import { HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { HttpCode, HttpStatus } from '@nestjs/common';
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { User, UserRole } from '../user/entities/user.entity';
@@ -15,7 +15,7 @@ import { SearchStoreDto } from './dto/search-store.dto';
 @ApiBearerAuth('access-token')
 @Controller('store')
 export class StoreController {
-  constructor(private readonly storeService: StoreService) { }
+  constructor(private readonly storeService: StoreService) {}
 
   // 상점 생성, 수정, 삭제, 판매량 확인, 모든 상점 조회, 특정 상점 상세 조회, 상점 검색
 
@@ -28,13 +28,13 @@ export class StoreController {
     return this.storeService.createStore(user, createStoreDto);
   }
 
-      // 사용자 ID로 상점 ID 반환
-      @UseGuards(JwtAuthGuard, RolesGuard)
-      @Get(':userId/storeid')
-      async getStoreByUserId(@Param('userId') userId: number) {
-          const store = await this.storeService.findStoreByUserId(userId);
-          return { storeId: store.id }; // 상점 ID만 반환
-      }
+  // 사용자 ID로 상점 ID 반환
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':userId/storeid')
+  async getStoreByUserId(@Param('userId') userId: number) {
+    const store = await this.storeService.findStoreByUserId(userId);
+    return { storeId: store.id }; // 상점 ID만 반환
+  }
 
   // 상점 정보 수정
   @UseGuards(JwtAuthGuard, RolesGuard)
