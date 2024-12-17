@@ -177,6 +177,7 @@
                         group.className = 'Group1';
 
                         group.innerHTML = `
+                            <div class="title title-id">id ${store.id}</div>
                             <div class="title title-name">${store.name}</div>
                             <div class="description title-description">${store.localSpecialties.map(specialty => specialty.name).join(', ')}</div>
                             <div class="title title-rating">평균 평점: ${store.reviewStats.averageRating}</div>
