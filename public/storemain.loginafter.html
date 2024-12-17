@@ -110,11 +110,11 @@
         <a href="storemain.loginafter.html">상점</a>
         <a href="local.loginafter.html">특산물</a>
         <a href="#orders">주문</a>
-        <a href="#products">상품 관리</a>
+        <a href="goods.list.loginafter.html">상품 관리</a>
         <a href="mypage.html">마이페이지</a>
-        <a href="login.html" id="logoutButton">로그아웃</a>
+        <a href="homepage.loginbefore.html" id="logoutButton">로그아웃</a>
     </div>
-
+    
     <div class="container">
         <div class="Mypagebar">
             <div class="menu-text">
@@ -177,6 +177,7 @@
                         group.className = 'Group1';
 
                         group.innerHTML = `
+                            <div class="title title-id">id ${store.id}</div>
                             <div class="title title-name">${store.name}</div>
                             <div class="description title-description">${store.localSpecialties.map(specialty => specialty.name).join(', ')}</div>
                             <div class="title title-rating">평균 평점: ${store.reviewStats.averageRating}</div>
