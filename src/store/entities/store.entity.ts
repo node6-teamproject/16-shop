@@ -1,3 +1,4 @@
+// src/store/entities/store.entity.ts
 import { Review } from '../../review/entities/review.entity';
 import { StoreProduct } from '../../store-product/entities/store-product.entity';
 import { User } from '../../user/entities/user.entity';
