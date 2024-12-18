@@ -1,4 +1,3 @@
-// src/store/dto/create-store.dto.ts
 import {
   IsLatitude,
   IsLongitude,

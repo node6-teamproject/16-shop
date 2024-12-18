@@ -9,5 +9,5 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export const GetUser = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
   // JwtStrategy의 validate()에서 반환한 user 객체
   const request = ctx.switchToHttp().getRequest();
-  return request.user ? request.user : null;
+  return request.user;
 });

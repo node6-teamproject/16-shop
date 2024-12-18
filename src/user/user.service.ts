@@ -1,12 +1,16 @@
+import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRole } from './entities/user.entity';
 import { UpdateDto } from './dto/update.dto';
 import { DeleteDto } from './dto/delete.dto';
@@ -15,35 +19,38 @@ import { CashDto } from './dto/cash.dto';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { LoginSuccessResponse, UserResponse } from './types/user.type';
-import { UserRepository } from './user.repository';
-import { UserValidator } from './user.validator';
 
 @Injectable()
 export class UserService {
   constructor(
     //TypeORM의 @InjectRepository 데코레이터는 특정 엔티티(User)의 데이터베이스 작업을 처리하는 Repository를 주입하는 데 사용
     //Repository 데이터베이스에서 특정 엔티티(User)를 관리하기 위한 메서드들이 포함
-    private readonly userRepository: UserRepository,
-    private readonly userValidator: UserValidator,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     //JWT 토큰을 생성하고 검증하는 데 사용
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
   ) {}
-
   //회원가입
-  async register(registerDto: RegisterDto): Promise<UserResponse<Partial<User>>> {
+  async register(registerDto: RegisterDto) {
     const { email, password, nickname, address, phone, admincode } = registerDto;
+    const admincode1 = process.env.ADMIN_CODE;
+    const existingUseremail = await this.findByEmail(email);
+    const existingUsernickname = await this.findByNickname(nickname);
+    if (existingUseremail) {
+      throw new ConflictException('이미 해당 이메일로 가입된 사용자가 있습니다!');
+    }
 
-    await this.userValidator.validateNewUser(email, nickname);
+    if (existingUsernickname) {
+      throw new ConflictException('똑같은 닉네임이 이미 존재합니다.');
+    }
 
-    const role = this.determineAdminCode(admincode);
-    const hashRound = this.config.get<number>('PASSWORD_HASH_ROUND');
+    let role = admincode === admincode1 ? UserRole.ADMIN : UserRole.CUSTOMER;
 
     //비밀번호 암호화
-    const hashedPassword = await bcrypt.hash(password, hashRound);
+    const hashedPassword = await hash(password, 10);
 
-    const user = await this.userRepository.create({
+    //db 저장
+    await this.userRepository.save({
       email,
       password: hashedPassword,
       nickname,
@@ -51,24 +58,21 @@ export class UserService {
       phone,
       role,
     });
-    //db 저장
-    return {
-      message: '회원가입 완료',
-      data: this.excludePasswordInUserData(user),
-    };
   }
 
-  async login(loginDto: LoginDto): Promise<LoginSuccessResponse> {
+  async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
-    const user = await this.userRepository.findByEmail(email, true);
-
+    const user = await this.userRepository.findOne({
+      select: ['id', 'email', 'password'],
+      where: { email },
+    });
     //이메일칸이 비어있다면
-    if (!user) {
+    if (_.isNil(user)) {
       throw new UnauthorizedException('이메일을 확인해주세요.');
     }
 
     //비밀번호가 틀리다면
-    if (!(await bcrypt.compare(password, user.password))) {
+    if (!(await compare(password, user.password))) {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
@@ -76,27 +80,42 @@ export class UserService {
     const payload = { email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
-      user_id: user.id,
+      user_id: user.id
     };
   }
 
-  async changeUserRole(changeDto: ChangeDto): Promise<UserResponse> {
+  async findByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
+  }
+
+  async findByNickname(nickname: string) {
+    return await this.userRepository.findOneBy({ nickname });
+  }
+
+  async changeUserRole(changeDto: ChangeDto): Promise<void> {
     const { email, role } = changeDto;
 
     // 사용자 찾기
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    this.validateRoleChange(role);
+    // 유효한 역할인지 확인
+    if (!Object.values(UserRole).includes(role as UserRole)) {
+      throw new BadRequestException('유효하지 않은 역할입니다.');
+    }
 
-    await this.userRepository.update(user.id, { role: role as UserRole });
+    if(role==='ADMIN'){
+      throw new BadRequestException('유효하지 않은 역할입니다.')
+    }
 
-    return { message: `${user.nickname}의 역할이 ${user.role}로 변경되었다` };
+    // 역할 업데이트
+    user.role = role as UserRole;
+    await this.userRepository.save(user);
   }
 
-  async cash(user: User, cashDto: CashDto): Promise<UserResponse> {
+  async cash(user: User, cashDto: CashDto) {
     const { cash } = cashDto;
 
     // 유효성 검사 기능
@@ -106,47 +125,33 @@ export class UserService {
 
     // 사용자 정보 업데이트
     user.cash += cash;
-    await this.userRepository.update(user.id, { cash: user.cash });
-
-    return { message: `${user.nickname}의 캐시가 ${cash}만큼 충전되어 ${user.cash}가 됨` };
+    await this.userRepository.save(user);
   }
 
-  async updateInfo(id: number, updateDto: UpdateDto): Promise<UserResponse<Partial<User>>> {
-    await this.userValidator.validateUserInfo(id, updateDto.password);
-
+  async updateInfo(id: number, updateDto: UpdateDto) {
+    await this.verifyInfo(id, updateDto.password);
     const { nickname, address, phone } = updateDto;
 
-    await this.userRepository.update(id, { nickname, address, phone });
-
-    return { message: `사용자 정보 변경`, data: { nickname, address, phone } };
+    await this.userRepository.update({ id }, { nickname, address, phone });
   }
 
-  async deleteInfo(id: number, deleteDto: DeleteDto): Promise<UserResponse> {
-    await this.userValidator.validateUserInfo(id, deleteDto.password);
-
-    await this.userRepository.delete(id);
-
-    return { message: '회원 탈퇴 완료' };
+  async deleteInfo(id: number, deleteDto: DeleteDto) {
+    await this.verifyInfo(id, deleteDto.password);
+    await this.userRepository.delete({ id });
   }
 
-  private determineAdminCode(admincode?: string): UserRole {
-    const configAdminCode = this.config.get<string>('ADMIN_CODE');
-    return admincode === configAdminCode ? UserRole.ADMIN : UserRole.CUSTOMER;
-  }
+  private async verifyInfo(id: number, password: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'password'],
+    });
 
-  private excludePasswordInUserData(user: User): Partial<User> {
-    const { password, ...filteredUser } = user;
-    return filteredUser;
-  }
-
-  private validateRoleChange(role: UserRole): void {
-    // 유효한 역할인지 확인
-    if (!Object.values(UserRole).includes(role as UserRole)) {
-      throw new BadRequestException('유효하지 않은 역할입니다.');
+    if (_.isNil(user)) {
+      throw new NotFoundException('데이터를 찾을 수 없거나 수정/삭제할 권한이 없습니다.');
     }
-
-    if (role === 'ADMIN') {
-      throw new BadRequestException('유효하지 않은 역할입니다.');
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
   }
 }
