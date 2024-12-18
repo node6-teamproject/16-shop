@@ -34,9 +34,13 @@ export class StoreRepository {
           'store.name',
           'store.rating',
           'store.review_count',
+          'store.image',
           'store_products.price',
           'local_specialty.id',
           'local_specialty.name',
+          'reviews.id',
+          'reviews.rating',
+          'reviews.content',
         ]);
 
       if (keyword) {
@@ -81,12 +85,13 @@ export class StoreRepository {
     });
   }
 
-  async findAllStores(): Promise<Store[]> {
+  async findAllStores(): Promise<Store[] | null> {
     return this.storeRepository.find({
       relations: {
         store_products: {
           local_specialty: true,
         },
+        reviews: true,
       },
       select: {
         id: true,
@@ -108,6 +113,7 @@ export class StoreRepository {
         store_products: {
           local_specialty: true,
         },
+        reviews: true,
       },
       select: {
         id: true,
@@ -122,6 +128,11 @@ export class StoreRepository {
         store_products: {
           price: true,
           local_specialty: { id: true, name: true },
+        },
+        reviews: {
+          id: true,
+          rating: true,
+          content: true,
         },
       },
     });
