@@ -6,7 +6,6 @@ import { Region } from './types/region.type';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SearchLocalSpecialtyDto } from './dto/search-local-specialty.dto';
 import { FindSpecialtyOptions, SearchConditions } from './types/local-specialty.service.type';
-import { LocalSpecialtyServiceInterface } from './interfaces/local-specialty.interface';
 
 const SPECIALTY_SELECT_FIELDS = {
   DEFAULT: {
@@ -27,7 +26,7 @@ const SPECIALTY_SELECT_FIELDS = {
 
 // 생성, 삭제, 전체 조회, 지역별 조회, id로 조회, 검색
 @Injectable()
-export class LocalSpecialtyService implements LocalSpecialtyServiceInterface {
+export class LocalSpecialtyService {
   constructor(
     @InjectRepository(LocalSpecialty)
     private readonly localSpecialtyRepository: Repository<LocalSpecialty>,

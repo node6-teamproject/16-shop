@@ -101,6 +101,10 @@
             cursor: pointer;
             margin-top: 10px;
         }
+
+        .review-form {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -109,7 +113,6 @@
         <a href="homepage.loginafter.html">Home</a>
         <a href="storemain.loginafter.html">상점</a>
         <a href="local.loginafter.html">특산물</a>
-        <a href="#orders">주문</a>
         <a href="goods.list.loginafter.html">상품 관리</a>
         <a href="mypage.html">마이페이지</a>
         <a href="homepage.loginbefore.html" id="logoutButton">로그아웃</a>
@@ -153,46 +156,53 @@
         });
 
         async function fetchLocalSpecialties(storeId) {
-    try {
-        const response = await fetch(`/store/${storeId}/product`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+            try {
+                const response = await fetch(`/store/${storeId}/product`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-        const data = await response.json();
-        const container = document.getElementById('container');
+                const data = await response.json();
+                const container = document.getElementById('container');
 
-        container.innerHTML = ''; // 기존 내용 삭제
+                container.innerHTML = ''; // 기존 내용 삭제
 
-        if (data.length > 0) {
-            data.forEach(item => {
-                const group = document.createElement('div');
-                group.className = 'Group1';
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const group = document.createElement('div');
+                        group.className = 'Group1';
 
-                group.innerHTML = `
+                        group.innerHTML = `
                     <div class="title title-product_name">${item.product_name}</div>
                     <div class="description title-description">${item.description}</div>
                     <div class="title title-price">가격: ${item.price} 원</div>
                     <div class="title title-stock">재고: ${item.stock}</div>
                     <button class="order-button" data-product-id="${item.id}">주문하기</button>
-                    <button class="cart-button" data-product-id="${item.id}">장바구니 추가</button>
+                    <button class="review-button" data-product-id="${item.id}">리뷰 달기</button>
+                    <div class="review-form" style="display:none;">
+                        <input type="number" placeholder="상점 ID" class="review-store-id" required>
+                        <textarea placeholder="리뷰 내용을 입력하세요" class="review-content" required></textarea>
+                        <input type="number" min="1" max="5" placeholder="평점 (1-5)" class="review-rating" required>
+                        <button class="submit-review" data-product-id="${item.id}">리뷰 제출</button>
+                    </div>
                 `;
 
-                container.appendChild(group);
-            });
-        } else {
-            container.innerHTML = '<div class="title">결과가 없습니다.</div>';
+                        container.appendChild(group);
+                    });
+                } else {
+                    container.innerHTML = '<div class="title">결과가 없습니다.</div>';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
+
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('searchButton').addEventListener('click', () => {
                 const storeId = document.getElementById('storeId').value;
@@ -252,6 +262,50 @@
                         }
                     } else {
                         alert('유효한 수량을 입력하세요.');
+                    }
+                }
+
+                // 리뷰 달기 기능
+                if (event.target.classList.contains('review-button')) {
+                    const reviewForm = event.target.nextElementSibling;
+                    reviewForm.style.display = reviewForm.style.display === 'none' ? 'block' : 'none';
+                }
+
+                if (event.target.classList.contains('submit-review')) {
+                    const productId = event.target.getAttribute('data-product-id');
+                    const reviewContent = event.target.previousElementSibling.previousElementSibling.value; // 리뷰 내용
+                    const reviewRating = event.target.previousElementSibling.value; // 평점
+                    const reviewStoreId = event.target.previousElementSibling.previousElementSibling.previousElementSibling.value; // 상점 ID
+
+                    if (!reviewContent || !reviewRating || !reviewStoreId) {
+                        alert('상점 ID, 리뷰 내용 및 평점을 입력하세요.');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/review', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            },
+                            body: JSON.stringify({
+                                store_id: parseInt(reviewStoreId), // 상점 ID
+                                rating: parseInt(reviewRating), // 평점
+                                content: reviewContent // 리뷰 내용
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const errorResponse = await response.json();
+                            throw new Error(errorResponse.message || '리뷰 등록 중 오류가 발생했습니다.');
+                        }
+
+                        alert('리뷰가 등록되었습니다.');
+                        // 리뷰 등록 후 페이지 갱신 또는 리뷰 표시 로직 추가 필요
+                    } catch (error) {
+                        console.error('리뷰 처리 오류:', error);
+                        alert(`리뷰 처리 오류: ${error.message}`);
                     }
                 }
             });
