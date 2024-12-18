@@ -29,6 +29,7 @@ export class StoreRepository {
         .createQueryBuilder('store')
         .leftJoinAndSelect('store.store_products', 'store_products')
         .leftJoinAndSelect('store_products.local_specialty', 'local_specialty')
+        .leftJoinAndSelect('store.reviews', 'reviews')
         .select([
           'store.id',
           'store.name',
