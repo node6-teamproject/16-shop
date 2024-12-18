@@ -145,13 +145,18 @@
 
                 const storeData = await response.json();
 
-                // storeData가 배열이므로 첫 번째 요소에 접근
-                const store = storeData[0];
-
-                // HTML 요소에 데이터 출력
-                document.getElementById('storeName').textContent = store.name || 'N/A';
-                document.getElementById('storeDescription').textContent = store.description || 'N/A';
-                document.getElementById('storeAddress').textContent = store.address || 'N/A';
+                // storeData가 객체인 경우
+                if (storeData) {
+                    // HTML 요소에 데이터 출력
+                    document.getElementById('storeName').textContent = storeData.name || 'N/A';
+                    document.getElementById('storeDescription').textContent = storeData.description || 'N/A';
+                    document.getElementById('storeAddress').textContent = storeData.address || 'N/A';
+                } else {
+                    // 데이터가 없을 경우 처리
+                    document.getElementById('storeName').textContent = '상점 정보가 없습니다.';
+                    document.getElementById('storeDescription').textContent = '상점 정보가 없습니다.';
+                    document.getElementById('storeAddress').textContent = '상점 정보가 없습니다.';
+                }
             } catch (error) {
                 console.error('Error fetching store details:', error);
             }

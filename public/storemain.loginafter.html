@@ -113,7 +113,7 @@
         <a href="mypage.html">마이페이지</a>
         <a href="homepage.loginbefore.html" id="logoutButton">로그아웃</a>
     </div>
-    
+
     <div class="container">
         <div class="Mypagebar">
             <div class="menu-text">
@@ -156,7 +156,7 @@
 
         async function fetchLocalSpecialties(keyword) {
             try {
-                const response = await fetch('http://localhost:3000/store/search', {
+                const response = await fetch('/store/search', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -178,12 +178,18 @@
                         const group = document.createElement('div');
                         group.className = 'Group1';
 
+                        // localSpecialties가 정의되어 있는지 확인
+                        const specialties = store.localSpecialties || [];
+                        const specialtiesNames = specialties.length > 0
+                            ? specialties.map(specialty => specialty.name).join(', ')
+                            : '특산물이 없습니다.'; // 특산물이 없을 때의 메시지
+
                         group.innerHTML = `
-                            <div class="title title-id">id ${store.id}</div>
-                            <div class="title title-name">${store.name}</div>
-                            <div class="description title-description">${store.localSpecialties.map(specialty => specialty.name).join(', ')}</div>
-                            <div class="title title-rating">평균 평점: ${store.reviewStats.averageRating}</div>
-                        `;
+                    <div class="title title-id">id ${store.id}</div>
+                    <div class="title title-name">${store.name}</div>
+                    <div class="description title-description">${specialtiesNames}</div>
+                    <div class="title title-rating">평균 평점: ${store.reviewStats ? store.reviewStats.averageRating : '정보 없음'}</div>
+                `;
 
                         container.appendChild(group);
                     });
