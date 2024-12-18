@@ -1,16 +1,4 @@
-import { UserInfo } from '../utils/userInfo.decorator';
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UseGuards,
-  Patch,
-  Param,
-  UnauthorizedException,
-  Delete,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Patch, Param, Delete } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -21,6 +9,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChangeDto } from './dto/change.dto';
 import { CashDto } from './dto/cash.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { LoginSuccessResponse, UserResponse } from './types/user.type';
+import { GetUser } from '../common/decorators/get-user.decorator';
 
 //주소/user
 @ApiTags('users')
@@ -34,13 +24,13 @@ export class UserController {
   //사용자 회원 가입
   @Post('sign-up')
   //loginDto에서 이메일과 비밀번호를 받아 사용자 등록
-  async register(@Body() registerDto: RegisterDto) {
+  async register(@Body() registerDto: RegisterDto): Promise<UserResponse<Partial<User>>> {
     return await this.userService.register(registerDto), { message: '회원가입이 완료되었습니다.' };
   }
 
   //로그인에 성공하면 토큰을 반환
   @Post('sign-in')
-  async login(@Body() loginDto: LoginDto) {
+  async login(@Body() loginDto: LoginDto): Promise<LoginSuccessResponse> {
     return await this.userService.login(loginDto);
   }
 
@@ -48,48 +38,47 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   //인증된 사용자 반환
   @Get('userinfo')
-  getEmail(@UserInfo() user: User) {
+  getUserInfo(@GetUser() user: User): UserResponse<Partial<User>> {
     const { password, ...filteredUser } = user;
-    return { data: filteredUser };
+    return {
+      message: '사용자 정보 조회 성공',
+      data: filteredUser,
+    };
   }
 
   //역할변경
   @Patch('seller')
   @UseGuards(JwtAuthGuard)
-  async changeRole(@Body() changeDto: ChangeDto) {
-    await this.userService.changeUserRole(changeDto);
-    return { message: '변경이 완료되었습니다.' };
+  async changeRole(@Body() changeDto: ChangeDto): Promise<UserResponse> {
+    return this.userService.changeUserRole(changeDto);
   }
 
   // 캐시 충전
   @Patch('cash')
   @UseGuards(JwtAuthGuard)
-  async cash(@UserInfo() user: User, @Body() cashDto: CashDto) {
-    await this.userService.cash(user, cashDto);
-    return { message: '캐쉬충전이 완료되었습니다.' };
+  async cash(@GetUser() user: User, @Body() cashDto: CashDto): Promise<UserResponse> {
+    return this.userService.cash(user, cashDto);
   }
 
   // 사용자 정보 업데이트
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  async updateInfo(@UserInfo() user: User, @Param('id') id: number, @Body() updateDto: UpdateDto) {
-    if (user.id !== id) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
-
-    await this.userService.updateInfo(id, updateDto);
-    const { password, ...filteredUser } = user;
-    return { message: '사용자 정보가 성공적으로 업데이트되었습니다.', data: filteredUser };
+  async updateInfo(
+    @GetUser() user: User,
+    @Param('id') id: number,
+    @Body() updateDto: UpdateDto,
+  ): Promise<UserResponse<Partial<User>>> {
+    return this.userService.updateInfo(id, updateDto);
   }
 
   // 회원탈퇴
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async deleteInfo(@UserInfo() user: User, @Param('id') id: number, @Body() deleteDto: DeleteDto) {
-    if (user.id !== id) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
-    await this.userService.deleteInfo(id, deleteDto);
-    return { message: '탈퇴 되었습니다.' };
+  async deleteInfo(
+    @GetUser() user: User,
+    @Param('id') id: number,
+    @Body() deleteDto: DeleteDto,
+  ): Promise<UserResponse> {
+    return this.userService.deleteInfo(id, deleteDto);
   }
 }
