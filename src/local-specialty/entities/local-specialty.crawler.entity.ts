@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+// src/local-specialty/entities/local-specialty.crawler.entity.ts
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Region } from '../types/region.type';
 import { SpecialtySeason } from '../types/season.type';
 

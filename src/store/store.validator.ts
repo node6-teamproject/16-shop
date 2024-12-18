@@ -1,3 +1,4 @@
+import { UserRole } from './../user/entities/user.entity';
 import {
   ConflictException,
   ForbiddenException,

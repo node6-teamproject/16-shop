@@ -80,8 +80,6 @@ export class StoreProductService {
       select: {
         id: true,
         product_name: true,
-        description: true,
-        stock: true,
         price: true,
         grade: true,
         type: true,

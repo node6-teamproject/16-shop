@@ -7,6 +7,8 @@ import { UserModule } from '../user/user.module';
 import { ReviewModule } from '../review/review.module';
 import { User } from '../user/entities/user.entity';
 import { AuthModule } from '../auth/auth.module';
+import { StoreRepository } from './store.repository';
+import { StoreValidator } from './store.validator';
 
 @Module({
   imports: [
@@ -16,7 +18,14 @@ import { AuthModule } from '../auth/auth.module';
     forwardRef(() => ReviewModule),
   ],
   controllers: [StoreController],
-  providers: [StoreService],
-  exports: [StoreService, TypeOrmModule],
+  providers: [
+    StoreService,
+    {
+      provide: StoreRepository,
+      useClass: StoreRepository,
+    },
+    StoreValidator,
+  ],
+  exports: [StoreService, StoreRepository, TypeOrmModule],
 })
 export class StoreModule {}

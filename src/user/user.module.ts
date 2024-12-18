@@ -31,8 +31,15 @@ import { UserValidator } from './user.validator';
       inject: [ConfigService],
     }),
   ],
-  providers: [UserService, UserRepository, UserValidator],
+  providers: [
+    UserService,
+    {
+      provide: UserRepository,
+      useClass: UserRepository,
+    },
+    UserValidator,
+  ],
   controllers: [UserController],
-  exports: [UserService],
+  exports: [UserService, UserRepository, TypeOrmModule],
 })
 export class UserModule {}
