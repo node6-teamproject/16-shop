@@ -1,3 +1,4 @@
+// src/common/utils/auth.util.ts
 import { UnauthorizedException } from '@nestjs/common';
 import { User } from '../../user/entities/user.entity';
 

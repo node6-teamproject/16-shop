@@ -1,13 +1,15 @@
 //JWT를 검증하는 jwt.strategy를 적용하기 위해 모듈 작성
 //https://velog.io/@wkddudghks81/jwt-%EA%B2%80%EC%A6%9D%ED%95%98%EB%8A%94-auth.modules.ts
 import { forwardRef, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { StoreModule } from '../store/store.module';
 import { RolesGuard } from './guards/roles.guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [
@@ -35,8 +37,9 @@ import { RolesGuard } from './guards/roles.guard';
     }),
     forwardRef(() => UserModule), // 추가!
     forwardRef(() => StoreModule),
+    TypeOrmModule.forFeature([User]),
   ],
   //JwtStrategy를 애플리케이션의 의존성 주입 시스템에 등록하는 부분
-  providers: [RolesGuard,JwtStrategy],
+  providers: [RolesGuard, JwtStrategy],
 })
 export class AuthModule {}

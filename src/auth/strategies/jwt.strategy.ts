@@ -4,15 +4,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-
-import { UserService } from '../../user/user.service';
 import _ from 'lodash';
+import { UserRepository } from '../../user/user.repository';
 
 @Injectable()
 //JWT 인증 전략을 설정
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly userService: UserService,
+    private readonly userRepository: UserRepository,
     configService: ConfigService,
   ) {
     super({
@@ -24,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user = await this.userService.findByEmail(payload.email);
+    const user = await this.userRepository.findByEmail(payload.email);
     if (_.isNil(user)) {
       throw new NotFoundException('해당하는 사용자를 찾을 수 없습니다.');
     }
