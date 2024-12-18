@@ -169,8 +169,9 @@
                 }
 
                 const data = await response.json();
-                const container = document.getElementById('container');
+                console.log(data); // 데이터 로그 출력으로 확인
 
+                const container = document.getElementById('container');
                 container.innerHTML = ''; // 기존 내용 삭제
 
                 if (data.length > 0) {
@@ -178,11 +179,17 @@
                         const group = document.createElement('div');
                         group.className = 'Group1';
 
+                        // 필요한 속성에 안전하게 접근
+                        const productName = item.product_name || '이름 없음';
+                        const productDescription = item.description || '설명 없음'; // description 사용
+                        const productPrice = item.price !== undefined ? item.price : '가격 없음';
+                        const productStock = item.stock !== undefined ? item.stock : '재고 정보 없음'; // stock 사용
+
                         group.innerHTML = `
-                    <div class="title title-product_name">${item.product_name}</div>
-                    <div class="description title-description">${item.description}</div>
-                    <div class="title title-price">가격: ${item.price} 원</div>
-                    <div class="title title-stock">재고: ${item.stock}</div>
+                    <div class="title title-product_name">${productName}</div>
+                    <div class="description title-description">${productDescription}</div>
+                    <div class="title title-price">가격: ${productPrice} 원</div>
+                    <div class="title title-stock">재고: ${productStock}</div>
                     <button class="order-button" data-product-id="${item.id}">주문하기</button>
                     <button class="review-button" data-product-id="${item.id}">리뷰 달기</button>
                     <div class="review-form" style="display:none;">
