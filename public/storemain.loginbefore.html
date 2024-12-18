@@ -129,10 +129,21 @@
     </div>
 
     <script>
+        function logout() {
+            localStorage.removeItem('token'); // 토큰 삭제
+            localStorage.removeItem('userId'); // 사용자 ID 삭제
+            window.location.href = 'homepage.loginbefore.html'; // 로그인 페이지로 리다이렉트
+        }
+
+        // 로그아웃 버튼 클릭 시 logout 함수 호출
+        document.getElementById('logoutButton').addEventListener('click', function (event) {
+            event.preventDefault(); // 기본 링크 클릭 동작 방지
+            logout(); // logout 함수 호출
+        });
 
         async function fetchLocalSpecialties(keyword) {
             try {
-                const response = await fetch('http://localhost:3000/store/search', {
+                const response = await fetch('/store/search', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -145,8 +156,9 @@
                 }
 
                 const data = await response.json();
-                const container = document.getElementById('container');
+                console.log(data); // API 응답 데이터 확인
 
+                const container = document.getElementById('container');
                 container.innerHTML = ''; // 기존 내용 삭제
 
                 if (data.stores.length > 0) {
@@ -154,11 +166,23 @@
                         const group = document.createElement('div');
                         group.className = 'Group1';
 
+                        // localSpecialties가 정의되어 있는지 확인
+                        const specialties = store.local_specialties || [];
+                        const specialtiesNames = specialties.length > 0
+                            ? specialties.map(specialty => specialty.name).join(', ')
+                            : '특산물이 없습니다.'; // 특산물이 없을 때의 메시지
+
+                        // 평균 평점과 총 리뷰 수
+                        const averageRating = store.review_stats && store.review_stats.average_rating !== undefined
+                            ? store.review_stats.average_rating
+                            : '정보 없음'; // 평균 평점이 없을 때의 메시지
+
                         group.innerHTML = `
-                            <div class="title title-name">${store.name}</div>
-                            <div class="description title-description">${store.localSpecialties.map(specialty => specialty.name).join(', ')}</div>
-                            <div class="title title-rating">평균 평점: ${store.reviewStats.averageRating}</div>
-                        `;
+                    <div class="title title-id">id ${store.id}</div>
+                    <div class="title title-name">${store.name}</div>
+                    <div class="description title-description">${specialtiesNames}</div>
+                    <div class="title title-rating">평균 평점: ${averageRating}</div>
+                `;
 
                         container.appendChild(group);
                     });
@@ -169,6 +193,8 @@
                 console.error('Error fetching data:', error);
             }
         }
+
+
 
         async function fetchAllLocalSpecialties() {
             // 전체 데이터 조회
