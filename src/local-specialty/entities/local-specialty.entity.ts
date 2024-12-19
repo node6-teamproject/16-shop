@@ -1,17 +1,10 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+// src/local-specialty/entities/local-specialty.entity.ts
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Region } from '../types/region.type';
 import { StoreProduct } from '../../store-product/entities/store-product.entity';
 import { SpecialtySeason } from '../types/season.type';
 
-@Entity()
+@Entity('local_specialty')
 export class LocalSpecialty {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -38,17 +31,11 @@ export class LocalSpecialty {
   @Column({ type: 'enum', enum: Region })
   region: Region;
 
+  @Column({ type: 'varchar' }) // 시/군 단위 추가 (강릉시, 속초시 등)
+  city: string;
+
   @Column({ nullable: true })
   image?: string;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn({ nullable: true })
-  updated_at?: Date;
-
-  @DeleteDateColumn({ nullable: true })
-  deleted_at?: Date;
 
   @OneToMany(() => StoreProduct, (storeProduct) => storeProduct.local_specialty)
   store_products: StoreProduct[];
