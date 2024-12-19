@@ -188,7 +188,7 @@
     <script>
         async function fetchLocalSpecialties(keyword) {
             try {
-                const response = await fetch('http://localhost:3000/specialty/search', {
+                const response = await fetch('/specialty/search', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
