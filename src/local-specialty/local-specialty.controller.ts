@@ -1,4 +1,3 @@
-// src/local-specialty/local-specialty.controller.ts
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 import { LocalSpecialtyService } from './local-specialty.service';
 import { Region } from './types/region.type';

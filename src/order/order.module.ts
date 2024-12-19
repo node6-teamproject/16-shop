@@ -11,7 +11,9 @@ import { StoreProduct } from '../store-product/entities/store-product.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CartItemModule } from '../cart-item/cart-item.module';
 import { OrderScheduler } from './schedulers/order.scheduler';
-// docker 문제 생기면 여기 import 필요
+import { OrderValidator } from './order.validator';
+import { OrderRepository } from './order.repository';
+import { StoreProductModule } from '../store-product/store-product.module';
 
 @Module({
   imports: [
@@ -20,8 +22,18 @@ import { OrderScheduler } from './schedulers/order.scheduler';
     forwardRef(() => CartItemModule),
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
+    forwardRef(() => StoreProductModule),
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderScheduler],
+  providers: [
+    OrderService,
+    OrderScheduler,
+    OrderValidator,
+    {
+      provide: OrderRepository,
+      useClass: OrderRepository,
+    },
+  ],
+  exports: [OrderService, OrderRepository],
 })
 export class OrderModule {}
