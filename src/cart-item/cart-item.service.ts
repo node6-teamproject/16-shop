@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from './entities/cart-item.entity';
 import { In, Repository } from 'typeorm';
-import { StoreProduct } from 'src/store-product/entities/store-product.entity';
-import { AuthUtils } from 'src/common/utils/auth.utils';
+import { StoreProduct } from '../store-product/entities/store-product.entity';
+import { AuthUtils } from '../common/utils/auth.utils';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { CartItemResponse, DeleteOptions, DeleteResult } from './types/cart-item.service.type';
 import { CartItemServiceInterface } from './interfaces/cart-item.interface';

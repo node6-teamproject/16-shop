@@ -84,6 +84,8 @@ export class StoreProductService {
         grade: true,
         type: true,
         local_specialty: { id: true, name: true },
+        description:true,
+        stock:true
       },
     });
   }

@@ -93,7 +93,7 @@ export class UserService {
 
     await this.userRepository.update(user.id, { role: role as UserRole });
 
-    return { message: `${user.nickname}의 역할이 ${user.role}로 변경되었다` };
+    return { message: `변경 완료` };
   }
 
   async cash(user: User, cashDto: CashDto): Promise<UserResponse> {
