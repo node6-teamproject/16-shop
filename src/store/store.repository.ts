@@ -86,7 +86,7 @@ export class StoreRepository {
     });
   }
 
-  async findAllStores(): Promise<Store[] | null> {
+  async findAllStores(): Promise<Store[]> {
     return this.storeRepository.find({
       relations: {
         store_products: {
@@ -136,6 +136,13 @@ export class StoreRepository {
           content: true,
         },
       },
+    });
+  }
+
+  async updateReviewStats(store_id: number, rating: number, reviewCount: number): Promise<void> {
+    await this.storeRepository.update(store_id, {
+      rating,
+      review_count: reviewCount,
     });
   }
 

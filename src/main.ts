@@ -37,7 +37,7 @@ async function bootstrap() {
     .build();
 
   app.useStaticAssets(join(__dirname, '..', 'public'), {
-    index: ['homepage.loginbefore.html'],
+    index: false,
     prefix: '/',
   });
 

@@ -5,8 +5,8 @@ import { Like, Repository } from 'typeorm';
 import { Region } from './types/region.type';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SearchLocalSpecialtyDto } from './dto/search-local-specialty.dto';
-import { FindSpecialtyOptions, SearchConditions } from './types/local-specialty.service.type';
-import { LocalSpecialtyServiceInterface } from './interfaces/local-specialty.interface';
+import { FindSpecialtyOptions, SearchConditions } from './types/local-specialty.type';
+import { LocalSpecialtyInterface } from './interfaces/local-specialty.interface';
 
 const SPECIALTY_SELECT_FIELDS = {
   DEFAULT: {
@@ -14,7 +14,6 @@ const SPECIALTY_SELECT_FIELDS = {
     name: true,
     season_info: true,
     region: true,
-    image:true,
   },
   DETAIL: {
     id: true,
@@ -22,13 +21,12 @@ const SPECIALTY_SELECT_FIELDS = {
     description: true,
     season_info: true,
     region: true,
-    image:true,
   },
 } as const;
 
 // 생성, 삭제, 전체 조회, 지역별 조회, id로 조회, 검색
 @Injectable()
-export class LocalSpecialtyService implements LocalSpecialtyServiceInterface {
+export class LocalSpecialtyService implements LocalSpecialtyInterface {
   constructor(
     @InjectRepository(LocalSpecialty)
     private readonly localSpecialtyRepository: Repository<LocalSpecialty>,
@@ -98,16 +96,6 @@ export class LocalSpecialtyService implements LocalSpecialtyServiceInterface {
     return specialty[0];
   }
 
-  // 필요한 경우 storeProducts 포함하여 조회하는 메서드 추가
-  // async findAllWithStoreProducts(): Promise<LocalSpecialty[]> {
-  //   return this.localSpecialtyRepository.find({
-  //     where: {
-  //       deleted_at: IsNull(),
-  //     },
-  //     relations: ['storeProducts'],
-  //   });
-  // }
-
   /**
    * 특산품 검색
    * @param searchDto 검색 조건
@@ -123,7 +111,7 @@ export class LocalSpecialtyService implements LocalSpecialtyServiceInterface {
     const conditions: SearchConditions = {};
 
     if (searchDto.keyword) {
-      conditions.name = Like(`%${searchDto.keyword}%`);
+      conditions.keyword = searchDto.keyword;
     }
 
     if (searchDto.region) {
