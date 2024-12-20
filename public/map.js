@@ -223,4 +223,4 @@ class SpecialtyMap {
   }
 }
 
-const specialtyMap = new SpecialtyMap('map-container', 'lzg0amobdq');
+const specialtyMap = new SpecialtyMap('map-container', 'wkccyoua6i');
