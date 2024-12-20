@@ -8,6 +8,9 @@ import { CartItemModule } from '../cart-item/cart-item.module';
 import { LocalSpecialty } from '../local-specialty/entities/local-specialty.entity';
 import { Store } from '../store/entities/store.entity';
 import { AuthModule } from '../auth/auth.module';
+import { StoreProductValidator } from './store-product.validator';
+import { StoreProductRepository } from './store-product.repository';
+import { LocalSpecialtyModule } from '../local-specialty/local-specialty.module';
 
 @Module({
   imports: [
@@ -15,8 +18,17 @@ import { AuthModule } from '../auth/auth.module';
     forwardRef(() => AuthModule),
     forwardRef(() => StoreModule),
     forwardRef(() => CartItemModule),
+    forwardRef(() => LocalSpecialtyModule),
   ],
   controllers: [StoreProductController],
-  providers: [StoreProductService],
+  providers: [
+    StoreProductService,
+    StoreProductValidator,
+    {
+      provide: StoreProductRepository,
+      useClass: StoreProductRepository,
+    },
+  ],
+  exports: [StoreProductService, StoreProductRepository],
 })
 export class StoreProductModule {}
