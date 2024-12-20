@@ -45,12 +45,6 @@ export class Store {
   @Column({ nullable: true, type: 'float' })
   longitude?: number;
 
-  @Column({ nullable: true, type: 'float' })
-  latitude?: number;
-
-  @Column({ default: 0, type: 'bigint' })
-  total_sales: number;
-
   @CreateDateColumn()
   created_at: Date;
 

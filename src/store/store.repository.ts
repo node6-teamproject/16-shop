@@ -123,8 +123,6 @@ export class StoreRepository {
         address: true,
         contact: true,
         image: true,
-        latitude: true,
-        longitude: true,
         rating: true,
         store_products: {
           price: true,
@@ -172,7 +170,6 @@ export class StoreRepository {
       address: store.address,
       phone_number: store.contact,
       image: store.image,
-      location: [store.longitude, store.latitude],
     };
   }
 }
