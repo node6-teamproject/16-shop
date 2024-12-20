@@ -67,7 +67,7 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':userId/storeid')
-  async getStoreByUserId(@Param('userId', ParseIntPipe) userId: number): Promise<Store> {
+  async getStoreByUserId(@Param('userId', ParseIntPipe) userId: number): Promise<{ id: number }> {
     return this.storeService.findStoreByUserId(userId);
   }
 

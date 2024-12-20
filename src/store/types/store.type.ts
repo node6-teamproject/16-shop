@@ -26,6 +26,7 @@ export type StoreDetailInfo = StoreBaseInfo & {
   address?: string;
   phone_number: string;
   image?: string;
+  location: [number, number];
 };
 
 export type SearchResult = {
