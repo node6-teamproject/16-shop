@@ -99,6 +99,12 @@
       .region-item:hover {
         transform: translateX(5px);
       }
+
+      .specialty-count {
+        font-size: 14px;
+        color: #777;
+        margin-top: 5px;
+      }
     </style>
   </head>
   <body>
@@ -110,8 +116,10 @@
       </div>
       <div class="region-list right"></div>
     </div>
+
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        // 지역 데이터 정의
         const regions = [
           {
             name: 'Gyeonggi',
@@ -120,7 +128,6 @@
             mapColor: '#3498db',
             icon: '🏢',
             description: '대한민국의 수도권 중심지입니다.',
-            specialtyCount: 4
           },
           {
             name: 'Gangwon',
@@ -129,7 +136,6 @@
             mapColor: '#e74c3c',
             icon: '⛰️',
             description: '아름다운 산과 바다가 있는 관광의 중심지입니다.',
-            specialtyCount: 8
           },
           {
             name: 'North Chungcheong',
@@ -138,7 +144,6 @@
             mapColor: '#f1c40f',
             icon: '⛰️',
             description: '내륙 중심의 교통과 물류의 요충지입니다.',
-            specialtyCount: 3
           },
           {
             name: 'South Chungcheong',
@@ -147,7 +152,6 @@
             mapColor: '#27ae60',
             icon: '🌊',
             description: '서해안의 수산업과 농업이 발달한 지역입니다.',
-            specialtyCount: 5
           },
           {
             name: 'North Jeolla',
@@ -156,7 +160,6 @@
             mapColor: '#9b59b6',
             icon: '🍚',
             description: '한국 전통 음식의 본고장입니다.',
-            specialtyCount: 6
           },
           {
             name: 'South Jeolla',
@@ -165,7 +168,6 @@
             mapColor: '#e67e22',
             icon: '🌾',
             description: '비옥한 평야와 청정 해역을 보유한 지역입니다.',
-            specialtyCount: 7
           },
           {
             name: 'North Gyeongsang',
@@ -174,7 +176,6 @@
             mapColor: '#1abc9c',
             icon: '⛰️',
             description: '한국의 전통문화와 역사가 살아있는 곳입니다.',
-            specialtyCount: 5
           },
           {
             name: 'South Gyeongsang',
@@ -183,7 +184,6 @@
             mapColor: '#d35400',
             icon: '🏠',
             description: '항만 물류와 해양 관광의 중심지입니다.',
-            specialtyCount: 6
           },
           {
             name: 'Jeju',
@@ -192,80 +192,136 @@
             mapColor: '#95a5a6',
             icon: '🌴',
             description: '아름다운 자연과 독특한 문화가 있는 관광의 섬입니다.',
-            specialtyCount: 3
-          }
+          },
         ];
+
+        // 지역 이름 매핑 정의
+        const regionMapping = {
+          경기도: 'Gyeonggi',
+          강원도: 'Gangwon',
+          충청북도: 'North Chungcheong',
+          충청남도: 'South Chungcheong',
+          전라북도: 'North Jeolla',
+          전라남도: 'South Jeolla',
+          경상북도: 'North Gyeongsang',
+          경상남도: 'South Gyeongsang',
+          제주도: 'Jeju',
+        };
 
         const leftList = document.querySelector('.region-list.left');
         const rightList = document.querySelector('.region-list.right');
 
-        regions.forEach((region, index) => {
-          const regionElement = `
+        // 특산품 데이터 가져오기
+        async function fetchSpecialtyData() {
+          try {
+            const response = await fetch('/specialty', {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+                'Cache-Control': 'no-cache',
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error('Failed to fetch specialty data:', error);
+            return [];
+          }
+        }
+
+        // 지역별 특산품 개수 계산
+        function calculateRegionCounts(specialties) {
+          const counts = {};
+          specialties.forEach((item) => {
+            if (item.region && regionMapping[item.region]) {
+              const englishName = regionMapping[item.region];
+              counts[englishName] = (counts[englishName] || 0) + 1;
+            }
+          });
+          return counts;
+        }
+
+        // UI 엘리먼트 생성
+        function createRegionElement(region, specialtyCount) {
+          return `
             <div class="region-item" data-region="${region.name}">
               <div class="region-icon" style="background-color: ${region.iconColor}">
                 ${region.icon}
               </div>
               <div class="region-info">
                 <div class="region-name">${region.korName}</div>
-                <div class="region-desc">${region.description}</div>
+                <div class="region-desc">
+                  ${region.description}
+                  <div class="specialty-count">특산품: ${specialtyCount}개</div>
+                </div>
               </div>
             </div>
           `;
+        }
 
-          if (index < Math.ceil(regions.length / 2)) {
-            leftList.innerHTML += regionElement;
-          } else {
-            rightList.innerHTML += regionElement;
+        // UI 업데이트
+        async function updateUI() {
+          try {
+            // 특산품 데이터 가져오기
+            const specialties = await fetchSpecialtyData();
+            console.log('Fetched specialties:', specialties);
+
+            // 지역별 특산품 개수 계산
+            const regionCounts = calculateRegionCounts(specialties);
+            console.log('Region counts:', regionCounts);
+
+            // 리스트 초기화
+            leftList.innerHTML = '';
+            rightList.innerHTML = '';
+
+            // 지역 목록 생성
+            regions.forEach((region, index) => {
+              const specialtyCount = regionCounts[region.name] || 0;
+              const regionElement = createRegionElement(region, specialtyCount);
+
+              if (index < Math.ceil(regions.length / 2)) {
+                leftList.innerHTML += regionElement;
+              } else {
+                rightList.innerHTML += regionElement;
+              }
+            });
+
+            return regions.map((region) => ({
+              ...region,
+              specialtyCount: regionCounts[region.name] || 0,
+            }));
+          } catch (error) {
+            console.error('Error updating UI:', error);
+            return regions.map((region) => ({ ...region, specialtyCount: 0 }));
           }
-        });
+        }
 
+        // 지도 초기화 및 이벤트 설정
         const svgObject = document.getElementById('korea-map');
         svgObject.addEventListener('load', function () {
           const svgDoc = svgObject.contentDocument;
           const paths = svgDoc.querySelectorAll('path');
 
-          paths.forEach((path) => {
-            const region = regions.find((r) => r.name === path.getAttribute('title'));
-            if (region) {
-              path.style.fill = region.mapColor;
-              path.style.stroke = '#FFFFFF';
-              path.style.strokeWidth = '1';
+          updateUI().then((updatedRegions) => {
+            paths.forEach((path) => {
+              const region = updatedRegions.find((r) => r.name === path.getAttribute('title'));
+              if (region) {
+                path.style.fill = region.mapColor;
+                path.style.stroke = '#FFFFFF';
+                path.style.strokeWidth = '1';
 
-              path.addEventListener('mouseover', () => {
-                path.style.opacity = '0.7';
-                const regionItem = document.querySelector(`.region-item[data-region="${region.name}"]`);
-                const regionName = regionItem.querySelector('.region-name');
-                regionName.textContent = `${region.korName} (특산물: ${region.specialtyCount}개)`;
-              });
+                path.addEventListener('mouseover', () => {
+                  path.style.opacity = '0.7';
+                });
 
-              path.addEventListener('mouseout', () => {
-                path.style.opacity = '1';
-                const regionItem = document.querySelector(`.region-item[data-region="${region.name}"]`);
-                const regionName = regionItem.querySelector('.region-name');
-                regionName.textContent = region.korName;
-              });
-            }
-          });
-
-          document.querySelectorAll('.region-item').forEach(item => {
-            const regionName = item.getAttribute('data-region');
-            const region = regions.find(r => r.name === regionName);
-            
-            item.addEventListener('mouseover', function() {
-              const nameElement = this.querySelector('.region-name');
-              nameElement.textContent = `${region.korName} (특산물: ${region.specialtyCount}개)`;
-              const path = svgDoc.querySelector(`path[title="${regionName}"]`);
-              if (path) {
-                path.style.opacity = '0.7';
-              }
-            });
-            
-            item.addEventListener('mouseout', function() {
-              const nameElement = this.querySelector('.region-name');
-              nameElement.textContent = region.korName;
-              const path = svgDoc.querySelector(`path[title="${regionName}"]`);
-              if (path) {
-                path.style.opacity = '1';
+                path.addEventListener('mouseout', () => {
+                  path.style.opacity = '1';
+                });
               }
             });
           });
