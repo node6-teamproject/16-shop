@@ -20,7 +20,9 @@ export class StoreProductRepository {
     const select: StoreProductSelect = {
       id: true,
       product_name: true,
+      description: true,
       price: true,
+      stock: true,
       grade: true,
       type: true,
       local_specialty: {
