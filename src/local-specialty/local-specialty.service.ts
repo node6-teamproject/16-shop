@@ -14,7 +14,6 @@ const SPECIALTY_SELECT_FIELDS = {
     name: true,
     season_info: true,
     region: true,
-    image: true,
   },
   DETAIL: {
     id: true,
@@ -22,7 +21,6 @@ const SPECIALTY_SELECT_FIELDS = {
     description: true,
     season_info: true,
     region: true,
-    image: true,
   },
 } as const;
 
@@ -113,7 +111,7 @@ export class LocalSpecialtyService implements LocalSpecialtyInterface {
     const conditions: SearchConditions = {};
 
     if (searchDto.keyword) {
-      conditions.keyword = searchDto.keyword;
+      conditions.name = Like(`%${searchDto.keyword}%`);
     }
 
     if (searchDto.region) {

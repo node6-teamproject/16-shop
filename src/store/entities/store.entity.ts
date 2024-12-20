@@ -42,8 +42,8 @@ export class Store {
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   rating: number;
 
-  @Column({ nullable: true, type: 'float' })
-  longitude?: number;
+  @Column({ default: 0, type: 'bigint' })
+  total_sales: number;
 
   @CreateDateColumn()
   created_at: Date;
