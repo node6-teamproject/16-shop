@@ -23,11 +23,8 @@ import { UserInterface } from './interfaces/user.interface';
 @Injectable()
 export class UserService implements UserInterface {
   constructor(
-    //TypeORM의 @InjectRepository 데코레이터는 특정 엔티티(User)의 데이터베이스 작업을 처리하는 Repository를 주입하는 데 사용
-    //Repository 데이터베이스에서 특정 엔티티(User)를 관리하기 위한 메서드들이 포함
     private readonly userRepository: UserRepository,
     private readonly userValidator: UserValidator,
-    //JWT 토큰을 생성하고 검증하는 데 사용
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
   ) {}
@@ -41,7 +38,6 @@ export class UserService implements UserInterface {
     const role = this.determineAdminCode(admincode);
     const hashRound = this.config.get<number>('PASSWORD_HASH_ROUND');
 
-    //비밀번호 암호화
     const hashedPassword = await bcrypt.hash(password, hashRound);
 
     const user = await this.userRepository.create({
@@ -63,17 +59,14 @@ export class UserService implements UserInterface {
     const { email, password } = loginDto;
     const user = await this.userRepository.findByEmail(email, true);
 
-    //이메일칸이 비어있다면
     if (!user) {
       throw new UnauthorizedException('이메일을 확인해주세요.');
     }
 
-    //비밀번호가 틀리다면
     if (!(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
-    //로그인 성공, jwt 토큰 반환
     const payload = { email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
@@ -84,7 +77,6 @@ export class UserService implements UserInterface {
   async changeUserRole(changeDto: ChangeDto): Promise<UserResponse> {
     const { email, role } = changeDto;
 
-    // 사용자 찾기
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
@@ -100,12 +92,10 @@ export class UserService implements UserInterface {
   async cash(user: User, cashDto: CashDto): Promise<UserResponse> {
     const { cash } = cashDto;
 
-    // 유효성 검사 기능
     if (cash <= 0) {
       throw new BadRequestException('충전할 캐쉬는 0보다 커야 합니다.');
     }
 
-    // 사용자 정보 업데이트
     user.cash += cash;
     await this.userRepository.update(user.id, { cash: user.cash });
 
@@ -141,7 +131,6 @@ export class UserService implements UserInterface {
   }
 
   private validateRoleChange(role: UserRole): void {
-    // 유효한 역할인지 확인
     if (!Object.values(UserRole).includes(role as UserRole)) {
       throw new BadRequestException('유효하지 않은 역할입니다.');
     }

@@ -1,4 +1,3 @@
-// src/order/dto/cart-order.dto.ts
 import { IsArray, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { OrderMethod } from '../entities/order.entity';
 

@@ -1,4 +1,3 @@
-// src/review/interfaces/review.interface.ts
 import { User } from '../../user/entities/user.entity';
 import { CreateReviewDto } from '../dto/create-review.dto';
 import { ReviewDetailResponse, ReviewResponse } from '../types/review.type';

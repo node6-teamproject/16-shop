@@ -1,4 +1,3 @@
-// src/order/order.module.ts
 import { forwardRef, Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';

@@ -1,4 +1,3 @@
-// src/order/order.service.ts
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../user/entities/user.entity';
 import { Order, OrderType, ShipStatus } from './entities/order.entity';
@@ -10,8 +9,6 @@ import { DirectOrderDto } from './dto/direct-order.dto';
 import { CartOrderDto } from './dto/cart-order.dto';
 import { OrderInterface } from './interfaces/order.interface';
 import { OrderRepository } from './order.repository';
-import { StoreProductRepository } from '../store-product/store-product.repository';
-import { UserRepository } from '../user/user.repository';
 import { OrderResponse } from './types/order.type';
 import { OrderValidator } from './order.validator';
 import { EntityManager, In } from 'typeorm';
@@ -21,13 +18,9 @@ import { CartItem } from '../cart-item/entities/cart-item.entity';
 export class OrderService implements OrderInterface {
   constructor(
     private readonly orderRepository: OrderRepository,
-    private readonly storeProductRepository: StoreProductRepository,
-    private readonly userRepository: UserRepository,
     private readonly cartItemService: CartItemService,
     private readonly orderValidator: OrderValidator,
   ) {}
-
-  // 주문하기, 유저의 모든 주문 조회하기, 주문 하나 조회하기, 주문의 배송 상태 확인하기, 주문 취소하기
 
   // 주문하기
   async createDirectOrder(
@@ -119,7 +112,6 @@ export class OrderService implements OrderInterface {
     const { order_address, order_method } = orderDto;
     const manager = this.orderRepository.getManager();
 
-    // 트랜잭션 시작 전에 기본 주문 생성
     const order = manager.create(Order, {
       user_id: user.id,
       order_address,
@@ -129,7 +121,6 @@ export class OrderService implements OrderInterface {
     });
 
     try {
-      // 2. 재고 확인 및 주문 상품 처리 (트랜잭션)
       await manager.transaction(async (tmanager) => {
         await tmanager.save(order);
         if (orderType === OrderType.DIRECT) {
@@ -137,7 +128,6 @@ export class OrderService implements OrderInterface {
         } else {
           await this.processCartOrderItems(order, orderDto as CartOrderDto, tmanager);
         }
-        // 3. 장바구니 비우기 (장바구니 주문인 경우에만)
         if (orderType === OrderType.CART) {
           await this.clearCartItems(tmanager, user.id, orderDto as CartOrderDto);
         }
@@ -148,7 +138,6 @@ export class OrderService implements OrderInterface {
         relations: ['order_items'],
       });
     } catch (error) {
-      // 주문 실패 시 주문 정보 삭제
       await manager.remove(order);
       throw error;
     }

@@ -67,7 +67,7 @@ export class MapService {
     return this.regions.find((region) => region.name === name);
   }
 
-  getSpecialtiesByRegion(name: string) {
+  getSpecialtiesByRegion(name: string): string[] | null {
     const region = this.getRegionByName(name);
     return region ? region.specialties : null;
   }

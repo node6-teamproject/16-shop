@@ -1,4 +1,3 @@
-// src/crawl.ts
 import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CrawlLocalSpecialty } from './local-specialty/entities/local-specialty.crawler.entity';
