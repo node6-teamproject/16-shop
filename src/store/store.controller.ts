@@ -1,4 +1,3 @@
-// src/store/store.controller.ts
 import { HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { StoreService } from './store.service';

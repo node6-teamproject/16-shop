@@ -1,4 +1,3 @@
-// src/order/types/order.type.ts
 import { Order, OrderMethod } from '../entities/order.entity';
 
 export type OrderResponse<T = void> = {

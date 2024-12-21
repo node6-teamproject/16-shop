@@ -1,5 +1,4 @@
-// src/store-product/store-product.service.ts
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStoreProductDto } from './dto/create-store-product.dto';
 import { UpdateStoreProductDto } from './dto/update-store-product.dto';
 import { User } from '../user/entities/user.entity';
@@ -17,13 +16,7 @@ export class StoreProductService implements StoreProductInterface {
     private readonly storeProductValidator: StoreProductValidator,
   ) {}
 
-  /**
-   * 상점 내 상품 등록
-   * @param user
-   * @param store_id
-   * @param createStoreProductDto
-   * @returns
-   */
+  // 상점 내 상품 등록
   async createStoreProductInStore(
     user: User,
     store_id: number,
@@ -47,21 +40,12 @@ export class StoreProductService implements StoreProductInterface {
     };
   }
 
-  /**
-   * 상점 내 상품들 조회
-   * @param store_id
-   * @returns
-   */
+  // 상점 내 상품 전체 조회
   async findAllInStore(store_id: number): Promise<StoreProduct[]> {
     return this.storeProductRepository.findAllProductByStoreId(store_id);
   }
 
-  /**
-   * 상점 내 상품 하나 상세 조회
-   * @param product_id
-   * @param store_id
-   * @returns
-   */
+  // 상점 내 상품 단일 조회
   async findOneProductInStore(product_id: number, store_id: number): Promise<StoreProduct> {
     this.storeProductValidator.validateIds({ product_id, store_id }, ['product_id', 'store_id']);
 
@@ -77,14 +61,7 @@ export class StoreProductService implements StoreProductInterface {
     return product;
   }
 
-  /**
-   * 상점 내 상품 수정
-   * @param user
-   * @param product_id
-   * @param store_id
-   * @param updateStoreProductDto
-   * @returns
-   */
+  // 상점 내 상품 수정
   async updateProductInfoInStore(
     user: User,
     product_id: number,
@@ -128,13 +105,7 @@ export class StoreProductService implements StoreProductInterface {
     };
   }
 
-  /**
-   * 상점 내 상품 삭제
-   * @param product_id
-   * @param store_id
-   * @param user
-   * @returns
-   */
+  // 상점 내 상품 삭제
   async deleteStoreProductInStore(
     product_id: number,
     store_id: number,

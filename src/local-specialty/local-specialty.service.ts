@@ -1,4 +1,3 @@
-// src/local-specialty/local-specialty.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { LocalSpecialty } from './entities/local-specialty.entity';
 import { Like, Repository } from 'typeorm';
@@ -14,7 +13,7 @@ const SPECIALTY_SELECT_FIELDS = {
     name: true,
     season_info: true,
     region: true,
-    image:true
+    image: true,
   },
   DETAIL: {
     id: true,
@@ -22,7 +21,7 @@ const SPECIALTY_SELECT_FIELDS = {
     description: true,
     season_info: true,
     region: true,
-    image:true
+    image: true,
   },
 } as const;
 
@@ -43,9 +42,9 @@ export class LocalSpecialtyService implements LocalSpecialtyInterface {
       withStoreProducts = false,
       selectDetail = false,
       customConditions,
-    } = options;
+    }: FindSpecialtyOptions = options;
 
-    const whereConditions = {
+    const whereConditions: FindSpecialtyOptions = {
       ...(id && { id }),
       ...(region && { region }),
       ...(customConditions && customConditions),
@@ -58,20 +57,13 @@ export class LocalSpecialtyService implements LocalSpecialtyInterface {
     });
   }
 
-  /**
-   * 특산품 전체 조회
-   * @returns 특산품 전체 조회 결과
-   */
+  // 특산품 전체 조회
   async findAll(): Promise<LocalSpecialty[]> {
     // find는 조건에 맞는 모든 엔티티 인스턴스를 배열 형태로 반환시킨다
     return this.findSpecialties({});
   }
 
-  /**
-   * 특산품 지역별 조회
-   * @param region 지역
-   * @returns 특산품 지역별 조회 결과
-   */
+  // 지역별 특산품 조회
   async findByRegion(region: Region): Promise<LocalSpecialty[]> {
     return this.findSpecialties({
       region,
@@ -79,12 +71,8 @@ export class LocalSpecialtyService implements LocalSpecialtyInterface {
     });
   }
 
-  /**
-   * 특산품 id로 조회
-   * @param id 특산품 id
-   * @returns 특산품 id로 조회 결과
-   */
-  async findById(id: number) {
+  // id로 특산품 조회
+  async findById(id: number): Promise<LocalSpecialty> {
     const specialty = await this.findSpecialties({
       id,
       withStoreProducts: true,
@@ -98,17 +86,14 @@ export class LocalSpecialtyService implements LocalSpecialtyInterface {
     return specialty[0];
   }
 
-  /**
-   * 특산품 검색
-   * @param searchDto 검색 조건
-   * @returns 특산품 검색 결과
-   */
+  // 특산품 검색
   async search(searchDto: SearchLocalSpecialtyDto): Promise<LocalSpecialty[]> {
     const conditions = this.buildSearchConditions(searchDto);
 
     return this.findSpecialties({ customConditions: conditions });
   }
 
+  // 검색 조건 생성
   private buildSearchConditions(searchDto: SearchLocalSpecialtyDto): SearchConditions {
     const conditions: SearchConditions = {};
 

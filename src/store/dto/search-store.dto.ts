@@ -1,4 +1,3 @@
-// src/store/dto/search-store.dto.ts
 import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class SearchStoreDto {

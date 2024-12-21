@@ -1,4 +1,3 @@
-// src/store-product/dto/update-store-product.dto.ts
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateStoreProductDto {

@@ -1,4 +1,3 @@
-// src/store-product/store-product.validator.ts
 import { StoreValidator } from './../store/store.validator';
 import { LocalSpecialtyRepository } from '../local-specialty/local-specialty.repository';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
@@ -28,7 +27,6 @@ export class StoreProductValidator {
     user_id: number,
     local_specialty_id: number,
   ): Promise<{ store: Store; localSpecialty: LocalSpecialty }> {
-    // 모든 ID 유효성 검사
     this.validateIds(
       {
         store_id,
@@ -46,14 +44,11 @@ export class StoreProductValidator {
 
   validateIds(ids: Record<string, number | undefined>, requiredIds: string[] = []): void {
     for (const [key, value] of Object.entries(ids)) {
-      // 필수 ID인 경우
       if (requiredIds.includes(key)) {
         if (!value || isNaN(value)) {
           throw new BadRequestException(`${key}는 필수이며 유효한 숫자여야 합니다.`);
         }
-      }
-      // 선택적 ID인 경우 (값이 제공된 경우에만 검증)
-      else if (value !== undefined && (isNaN(value) || value <= 0)) {
+      } else if (value !== undefined && (isNaN(value) || value <= 0)) {
         throw new BadRequestException(`${key}는 0보다 큰 유효한 숫자여야 합니다.`);
       }
     }
