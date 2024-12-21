@@ -1,4 +1,3 @@
-// src/cart-item/cart-item.validator.ts
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CartItemRepository } from './cart-item.repository';
 import { StoreProductRepository } from '../store-product/store-product.repository';
@@ -14,7 +13,7 @@ export class CartItemValidator {
   ) {}
 
   async validateCartItem(user_id: number, cart_item_id: number): Promise<CartItem> {
-    const cartItem = await this.cartItemRepository.findById(cart_item_id, user_id);
+    const cartItem: CartItem | null = await this.cartItemRepository.findById(cart_item_id, user_id);
 
     if (!cartItem) {
       throw new NotFoundException('장바구니 아이템 찾을 수 없음');
@@ -28,7 +27,7 @@ export class CartItemValidator {
     store_id: number,
     quantity: number,
   ): Promise<StoreProduct> {
-    const storeProduct = await this.storeProductRepository.findOne({
+    const storeProduct: StoreProduct | null = await this.storeProductRepository.findOne({
       id: store_product_id,
       store_id,
     });

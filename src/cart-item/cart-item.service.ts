@@ -1,4 +1,3 @@
-// src/cart-item/cart-item.service.ts
 import { Injectable } from '@nestjs/common';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { User } from '../user/entities/user.entity';
@@ -6,7 +5,7 @@ import { CartItem } from './entities/cart-item.entity';
 import { StoreProduct } from '../store-product/entities/store-product.entity';
 import { AuthUtils } from '../common/utils/auth.utils';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import { CartItemResponse } from './types/cart-item.type';
+import { CartItemResponse, DeleteResult } from './types/cart-item.type';
 import { CartItemInterface } from './interfaces/cart-item.interface';
 import { CartItemRepository } from './cart-item.repository';
 import { CartItemValidator } from './cart-item.validator';
@@ -27,7 +26,6 @@ export class CartItemService implements CartItemInterface {
 
     await this.cartItemValidator.validateStoreProduct(store_product_id, store_id, quantity);
 
-    // 이미 장바구니에 있는 상품인지 확인
     const existingCartItem = await this.cartItemRepository.findByUserAndProduct(
       user.id,
       store_product_id,
@@ -58,7 +56,7 @@ export class CartItemService implements CartItemInterface {
   ): Promise<CartItem> {
     AuthUtils.validateLogin(user);
 
-    const cartItem = await this.cartItemValidator.validateCartItem(user.id, cart_item_id);
+    const cartItem: CartItem = await this.cartItemValidator.validateCartItem(user.id, cart_item_id);
 
     await this.cartItemValidator.validateStoreProduct(
       cartItem.store_product_id,
@@ -74,8 +72,8 @@ export class CartItemService implements CartItemInterface {
   async remove(user: User, cart_item_id: number): Promise<CartItemResponse> {
     AuthUtils.validateLogin(user);
 
-    const cartItem = await this.cartItemValidator.validateCartItem(user.id, cart_item_id);
-    const result = await this.cartItemRepository.delete({
+    const cartItem: CartItem = await this.cartItemValidator.validateCartItem(user.id, cart_item_id);
+    const result: DeleteResult = await this.cartItemRepository.delete({
       user_id: user.id,
       cart_item_id,
     });
@@ -86,7 +84,7 @@ export class CartItemService implements CartItemInterface {
   }
 
   async removeAll(user_id: number): Promise<CartItemResponse> {
-    const result = await this.cartItemRepository.delete({ user_id });
+    const result: DeleteResult = await this.cartItemRepository.delete({ user_id });
     this.cartItemValidator.validateDeleteResult(result, { user_id });
 
     return { message: '장바구니를 비웠습니다.' };
@@ -96,7 +94,7 @@ export class CartItemService implements CartItemInterface {
     user_id: number,
     store_product_ids: number[],
   ): Promise<CartItemResponse> {
-    const result = await this.cartItemRepository.delete({
+    const result: DeleteResult = await this.cartItemRepository.delete({
       user_id,
       store_product_ids,
     });

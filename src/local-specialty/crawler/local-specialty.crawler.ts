@@ -72,15 +72,14 @@ export class LocalSpecialtyCrawler {
 
       this.logger.log(regionFullName);
 
-      let region = Region.GYEONGGI; // 기본값 설정
+      let region = Region.GYEONGGI;
       for (const [key, value] of Object.entries(this.REGION_MAP)) {
         if (regionFullName.includes(key)) {
           region = value;
-          break; // 매칭되면 반복 중단
+          break;
         }
       }
 
-      // 특산물 목록을 배열로 변환하여 Promise.all로 처리
       const specialties = $('.sub_lst > ul > li')
         .map((_, element) => {
           const seasonText = $(element).find('.cartoons').text().trim();
@@ -97,16 +96,15 @@ export class LocalSpecialtyCrawler {
             imageUrl,
           };
         })
-        .get(); // cheerio 객체를 일반 배열로 변환
+        .get();
 
-      // 모든 특산물 처리를 동시에 실행
       await Promise.all(
         specialties.map(async (specialty) => {
           const existing = await this.localSpecialty.findOne({
             where: {
               name: specialty.name,
               region: specialty.region,
-              city: specialty.city, // 시/군까지 포함하여 중복 체크
+              city: specialty.city,
             },
           });
 

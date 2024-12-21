@@ -1,4 +1,3 @@
-// src/store-product/interfaces/store-product.interface.ts
 import { User } from '../../user/entities/user.entity';
 import { UpdateStoreProductDto } from '../dto/update-store-product.dto';
 import { StoreProduct } from '../entities/store-product.entity';

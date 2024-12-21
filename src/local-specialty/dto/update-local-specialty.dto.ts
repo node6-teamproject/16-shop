@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNotEmpty, MaxLength, IsEnum } from 'class-validator';
+import { IsOptional, IsString, MaxLength, IsEnum } from 'class-validator';
 import { Region } from '../types/region.type';
 import { SpecialtySeason } from '../types/season.type';
 

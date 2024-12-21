@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { LocalSpecialty } from './entities/local-specialty.entity';
-import { Like, Repository } from 'typeorm';
+import { FindOptionsSelect, Like, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import {
   FindSpecialtyOptions,
@@ -24,7 +24,7 @@ export class LocalSpecialtyRepository {
   }
 
   async findOne(id: number): Promise<LocalSpecialty | null> {
-    const results = await this.findSpecialties({
+    const results: LocalSpecialty[] = await this.findSpecialties({
       id,
       withStoreProducts: true,
     });
@@ -49,7 +49,7 @@ export class LocalSpecialtyRepository {
       withStoreProducts = false,
       selectDetail = false,
       customConditions,
-    } = options;
+    }: FindSpecialtyOptions = options;
 
     const whereConditions: SearchWhereConditions = {};
 
@@ -73,7 +73,7 @@ export class LocalSpecialtyRepository {
     return this.findSpecialties({ customConditions: conditions });
   }
 
-  private getDefaultSelectFields() {
+  private getDefaultSelectFields(): FindOptionsSelect<LocalSpecialty> {
     return {
       id: true,
       name: true,
@@ -82,7 +82,7 @@ export class LocalSpecialtyRepository {
     };
   }
 
-  private getDetailSelectFields() {
+  private getDetailSelectFields(): FindOptionsSelect<LocalSpecialty> {
     return {
       id: true,
       name: true,

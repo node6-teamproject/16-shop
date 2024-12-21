@@ -1,18 +1,13 @@
-// src/order/order.validator.ts
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DirectOrderDto } from './dto/direct-order.dto';
 import { StoreProductRepository } from '../store-product/store-product.repository';
 import { CartOrderDto } from './dto/cart-order.dto';
 import { User } from '../user/entities/user.entity';
-import { CartItemService } from '../cart-item/cart-item.service';
 import { Order, ShipStatus } from './entities/order.entity';
 
 @Injectable()
 export class OrderValidator {
-  constructor(
-    private readonly storeProductRepository: StoreProductRepository,
-    private readonly cartItemService: CartItemService,
-  ) {}
+  constructor(private readonly storeProductRepository: StoreProductRepository) {}
 
   async validateStockForDirectOrder(orderDto: DirectOrderDto): Promise<void> {
     const storeProduct = await this.storeProductRepository.findOne({

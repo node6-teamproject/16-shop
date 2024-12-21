@@ -1,4 +1,3 @@
-// src/store/store.service.ts
 import { StoreValidator } from './store.validator';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
@@ -11,7 +10,6 @@ import { StoreInterface } from './interfaces/store.interface';
 import { StoreRepository } from './store.repository';
 import { SearchResult, StoreBaseInfo, StoreDetailInfo, StoreResponse } from './types/store.type';
 
-// TODO: 상점 판매량 확인 함수 구현
 @Injectable()
 export class StoreService implements StoreInterface {
   constructor(
